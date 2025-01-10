@@ -63,6 +63,8 @@ end
 
 function M.new( popup, roll_controller, roll_tracker, config, finish_early, cancel_roll, raid_roll, master_loot_correlation_data )
   local function rolls_content( result, rolls )
+    local data = roll_tracker.get()
+
     for i = 1, getn( rolls ) do
       local roll = rolls[ i ]
 
@@ -72,7 +74,10 @@ function M.new( popup, roll_controller, roll_tracker, config, finish_early, canc
         player_name = roll.player_name,
         player_class = roll.player_class,
         roll = roll.roll,
-        padding = i == 1 and top_padding or nil
+        padding = i == 1 and top_padding or nil,
+        on_click = function() 
+          roll_controller.award_loot( { name = roll.player_name, class = roll.player_class }, data.item )
+        end
       } )
     end
   end

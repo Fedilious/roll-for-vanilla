@@ -37,9 +37,9 @@ function M.new( popup_builder, roll_controller, confirm_award, RollingPopupConte
         :with_on_show( function()
           ---@diagnostic disable-next-line: undefined-global
           local rolling_frame = RollForRollingFrame
-          if rolling_frame then
-            rolling_frame:Hide()
-          end
+          -- if rolling_frame then
+            -- rolling_frame:Hide()
+          -- end
         end )
         :build()
 
@@ -163,9 +163,9 @@ function M.new( popup_builder, roll_controller, confirm_award, RollingPopupConte
     ---@diagnostic disable-next-line: undefined-global
     local anchor = UIParent
     if point.point == "CENTER" and point.relative_point == "CENTER" then
-      popup:SetPoint( point.point, anchor, point.relative_point, point.x, point.y )
+      popup:SetPoint( point.point, anchor, point.relative_point, point.x, point.y - 150)
     else
-      popup:SetPoint( point.point, anchor, point.relative_point, point.x - popup:GetWidth() / 2, point.y + popup:GetHeight() / 2 )
+      popup:SetPoint( point.point, anchor, point.relative_point, point.x - popup:GetWidth() / 2, point.y + popup:GetHeight() / 2 - 150 )
     end
 
     popup:Show()

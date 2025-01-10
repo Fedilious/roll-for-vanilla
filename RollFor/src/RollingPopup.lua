@@ -153,14 +153,7 @@ function M.new( popup_builder, db, config )
             frame.icon:Show()
           end
 
-          -- local player_name = v.player_name
-
-          frame:SetScript( "OnClick", function()
-            -- if selected_frame then selected_frame:deselect() end
-            -- frame:select()
-            -- selected_frame = frame
-            -- print( player_name )
-          end )
+          frame:SetScript( "OnClick", v.on_click or function() end )
         elseif type == "button" then
           frame:SetWidth( v.width or button_defaults.width )
           frame:SetHeight( v.height or button_defaults.height )

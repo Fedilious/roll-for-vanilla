@@ -59,6 +59,11 @@ function M.new( master_loot_candidates, award_item, master_loot_frame, master_lo
     m_confirmed = { slot = data.slot, player = player }
     m.api.GiveMasterLoot( data.slot, player.value )
     master_loot_frame.hide()
+
+    local rolling_frame = RollForRollingFrame
+    if rolling_frame then
+      rolling_frame:Hide()
+    end
   end
 
   local function normal_loot( button )
