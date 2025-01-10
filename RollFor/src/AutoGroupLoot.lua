@@ -21,6 +21,11 @@ function M.new( loot_list, config, boss_list )
   end
 
   local function on_loot_slot_cleared()
+    if m_item_count == nil then
+      -- in case this is called before on_loot_opened
+      return
+    end
+
     m_item_count = m_item_count - 1
     if m_item_count > 0 then return end
     if not m_item_count or m_item_count > 0 then return end

@@ -50,7 +50,7 @@ function M.new( loot_facade, item_utils )
         local info = lf.get_info( slot )
 
         if info then
-          table.insert( items, item_utils.make_coin( info.texture, info.name ) )
+          table.insert( items, item_utils.make_coin( info.texture, info.name, slot ) )
         end
       else
         local link = lf.get_link( slot )

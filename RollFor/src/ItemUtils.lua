@@ -47,7 +47,7 @@ M.interface = {
 ---@field get_tooltip_link fun( item_link: ItemLink ): TooltipItemLink
 ---@field make_item fun( id: number, name: string, link: ItemLink, quality: ItemQuality, texture: string ): Item
 ---@field make_distributable_item fun( id: number, name: string, link: ItemLink, quality: ItemQuality, texture: string, slot: number ): DistributableItem
----@field make_coin fun( texture: string, amount_text: string ): Coin
+---@field make_coin fun( texture: string, amount_text: string, slot: number ): Coin
 
 ---@param item_link ItemLink
 ---@return number | nil
@@ -106,8 +106,8 @@ function M.make_distributable_item( id, name, link, quality, texture, slot )
   return { id = id, name = name, link = link, quality = quality, texture = texture, slot = slot }
 end
 
-function M.make_coin( texture, amount_text )
-  return { coin = true, texture = texture, amount_text = amount_text }
+function M.make_coin( texture, amount_text, slot )
+  return { coin = true, texture = texture, amount_text = amount_text, slot = slot }
 end
 
 m.ItemUtils = M

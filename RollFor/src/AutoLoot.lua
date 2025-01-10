@@ -43,7 +43,27 @@ function M.new( loot_list, api, db, config )
 
           if index then
             api().GiveMasterLoot( item.slot, index )
+
+            local reason = "auto-loot"
+            if quality < threshold then
+              reason = "quality"
+            end
+
+            info( string.format( "Auto-looting %s due to %s", item.link, reason ) )
           end
+        end
+      end
+    end
+
+    -- Coin roll happens separately to prevent interrupts from breaking
+    -- slot order
+    if api().SetAutoloot then
+      for _, item in ipairs( loot_list.get_items() ) do
+        if item.coin and item.slot and not item.id then
+          LootSlot(item.slot, 1)
+
+          local amount = string.gsub( string.gsub( item.amount_text, "\n", " " ), " $", "" )
+          info( string.format( "Split %s with raid", hl(amount) ) )
         end
       end
     end
@@ -123,6 +143,12 @@ function M.new( loot_list, api, db, config )
   local function clear()
   end
 
+  local function is_auto_looted( item_id )
+    local zone_name = api().GetRealZoneText()
+
+    return items[ zone_name ] and items[ zone_name ][ item_id ]
+  end
+
   local function on_command( args )
     for item_link in string.gmatch( args, "add (.*)" ) do
       add( item_link )
@@ -144,7 +170,8 @@ function M.new( loot_list, api, db, config )
     on_loot_opened = on_loot_opened,
     add = add,
     remove = remove,
-    clear = clear
+    clear = clear,
+    is_auto_looted = is_auto_looted
   }
 end
 
