@@ -169,7 +169,6 @@ local function create_components()
   local loot_facade = m.LootFacade.new( m.EventFrame.new( m.api ), m.api )
   M.loot_list = m.LootList.new( loot_facade, M.item_utils, m.api )
 
-  M.dropped_loot_announce = m.DroppedLootAnnounce.new( M.loot_list, announce, M.dropped_loot, M.master_loot_tracker, M.softres, M.winner_tracker )
   M.roll_tracker = m.RollTracker.new()
   M.roll_controller = m.RollController.new( M.roll_tracker )
   M.master_loot_correlation_data = m.MasterLootCorrelationData.new( M.item_utils )
@@ -185,15 +184,12 @@ local function create_components()
     M.roll_controller
   )
 
-  M.softres_gui = m.SoftResGui.new( M.api, M.import_encoded_softres_data, M.softres_check, M.softres, clear_data, M.dropped_loot_announce.reset )
-
   M.trade_tracker = m.TradeTracker.new(
     M.ace_timer,
     trade_complete_callback
   )
 
   M.usage_printer = m.UsagePrinter.new( M.config )
-  M.minimap_button = m.MinimapButton.new( M.api, db( "minimap_button" ), M.softres_gui.toggle, M.softres_check, M.config )
   M.master_loot_warning = m.MasterLootWarning.new( M.api, M.config, m.BossList.zones )
   M.auto_loot = m.AutoLoot.new( M.loot_list, M.api, db( "auto_loot" ), M.config )
   M.pfui_integration_dialog = m.PfUiIntegrationDialog.new( M.config )
@@ -204,6 +200,10 @@ local function create_components()
   M.rolling_tip_popup = m.RollingTipPopup.new( M.loot_list, m.FrameBuilder, M.config )
   M.softres_roll_gui_data = m.SoftResRollGuiData.new( M.softres, M.group_roster )
   M.tie_roll_gui_data = m.TieRollGuiData.new( M.group_roster )
+
+  M.dropped_loot_announce = m.DroppedLootAnnounce.new( M.loot_list, announce, M.dropped_loot, M.master_loot_tracker, M.softres, M.winner_tracker, M.auto_loot )
+  M.softres_gui = m.SoftResGui.new( M.api, M.import_encoded_softres_data, M.softres_check, M.softres, clear_data, M.dropped_loot_announce.reset )
+  M.minimap_button = m.MinimapButton.new( M.api, db( "minimap_button" ), M.softres_gui.toggle, M.softres_check, M.config )
 
   local rolling_popup_db = db( "rolling_popup" )
 
