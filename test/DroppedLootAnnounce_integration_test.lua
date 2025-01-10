@@ -11,6 +11,7 @@ local is_in_raid = utils.is_in_raid
 local loot_threshold = utils.loot_threshold
 local mock_blizzard_loot_buttons = utils.mock_blizzard_loot_buttons
 local LootQuality = utils.LootQuality
+local c = utils.console_message
 local r = utils.raid_message
 local master_looter = utils.master_looter
 local assert_messages = utils.assert_messages
@@ -76,6 +77,7 @@ function DroppedLootAnnounceIntegrationSpec:should_not_show_loot_if_there_are_no
 
   -- Then
   assert_messages(
+    c( "RollFor: Auto-looting [Hearthstone] due to quality")
   )
 end
 
