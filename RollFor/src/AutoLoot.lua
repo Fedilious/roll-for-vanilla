@@ -30,6 +30,10 @@ function M.new( loot_list, api, db, config )
   end
 
   local function on_auto_loot()
+    if not m.is_player_master_looter() then
+      return
+    end
+
     local zone_name = api().GetRealZoneText()
     local item_ids = items[ zone_name ] or {}
     local threshold = m.api.GetLootThreshold()
