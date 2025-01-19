@@ -566,6 +566,7 @@ utils.load_real_stuff( function( module_name )
   if module_name == "src/LootAwardPopup" then return require( "mocks/LootAwardPopupMock" ) end
   if module_name == "src/Config" then return mock_config() end
   if module_name == "src/LootList" then require( "mocks/LootList" ) end
+  if module_name == "src/TooltipReader" then require( "mocks/TooltipReader" ) end
   if module_name == "src/api/LootFacade" then
     ---@diagnostic disable-next-line: different-requires
     loot_event_facade = require( "mocks/LootFacade" )
