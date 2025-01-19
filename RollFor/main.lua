@@ -165,6 +165,7 @@ local function create_components()
   M.softres_check = m.SoftResCheck.new( M.matched_name_softres, M.group_roster, M.name_matcher, M.ace_timer,
     M.absent_softres, db( "softres_check" ) )
   M.winner_tracker = m.WinnerTracker.new( db( "winner_tracker" ) )
+  M.tooltip_reader = m.TooltipReader.new()
 
   local loot_facade = m.LootFacade.new( m.EventFrame.new( m.api ), m.api )
   M.loot_list = m.LootList.new( loot_facade, M.item_utils, m.api )
@@ -191,7 +192,7 @@ local function create_components()
 
   M.usage_printer = m.UsagePrinter.new( M.config )
   M.master_loot_warning = m.MasterLootWarning.new( M.api, M.config, m.BossList.zones )
-  M.auto_loot = m.AutoLoot.new( M.loot_list, M.api, db( "auto_loot" ), M.config )
+  M.auto_loot = m.AutoLoot.new( M.loot_list, M.tooltip_reader, M.api, db( "auto_loot" ), M.config )
   M.pfui_integration_dialog = m.PfUiIntegrationDialog.new( M.config )
   M.new_group_event = m.NewGroupEvent.new()
   M.new_group_event.subscribe( M.winner_history.start_session )

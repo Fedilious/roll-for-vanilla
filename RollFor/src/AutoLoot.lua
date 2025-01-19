@@ -14,7 +14,7 @@ local M = {}
 local button_visible = false
 local _G = getfenv( 0 )
 
-function M.new( loot_list, api, db, config )
+function M.new( loot_list, tooltip_reader, api, db, config )
   db.items = db.items or {}
 
   local frame
@@ -41,7 +41,7 @@ function M.new( loot_list, api, db, config )
     for _, item in ipairs( loot_list.get_items() ) do
       local quality = item.quality or 0
 
-      if item.id and item.slot then
+      if item.id and item.slot and not tooltip_reader.is_bop( item.slot ) then
         if quality < threshold or config.auto_loot() and item_ids[ item.id ] then
           local index = find_my_candidate_index()
 

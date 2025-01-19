@@ -76,4 +76,5 @@ src\InstaRaidRollRollingLogic.lua
 src\EventBus.lua
 src\LootList.lua
 src\LootListSoftresDecorator.lua
+src\TooltipReader.lua
 main.lua
