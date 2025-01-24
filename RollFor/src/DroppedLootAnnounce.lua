@@ -187,12 +187,12 @@ function M.create_item_announcements( summary )
   return stringify( sort( result ) )
 end
 
-function M.process_dropped_items( loot_list, master_loot_tracker, softres, auto_loot )
+function M.process_dropped_items( loot_list, master_loot_tracker, tooltip_reader, softres, auto_loot, config )
   local source_guid = loot_list.get_source_guid()
-  local threshold = m.api.GetLootThreshold()
+  local threshold = config.loot_threshold()
   local items = filter( loot_list.get_items(), function( item )
     local quality = item.quality or 0
-    return quality >= threshold and not auto_loot.is_auto_looted(item.id) and item.id ~= 29434
+    return (quality >= threshold or tooltip_reader.is_bop( item.slot )) and not auto_loot.is_auto_looted(item.id) and item.id ~= 29434
   end )
 
   for _, item in ipairs( items ) do
@@ -273,7 +273,7 @@ local function should_announce( i, item_count, announcement )
   return false
 end
 
-function M.new( loot_list, announce, dropped_loot, master_loot_tracker, softres, winner_tracker, auto_loot )
+function M.new( loot_list, announce, dropped_loot, master_loot_tracker, tooltip_reader, softres, winner_tracker, auto_loot, config )
   local announcing = false
   local announced_source_ids = {}
 
@@ -288,7 +288,7 @@ function M.new( loot_list, announce, dropped_loot, master_loot_tracker, softres,
       return
     end
 
-    local source_guid, items, announcements = M.process_dropped_items( loot_list, master_loot_tracker, softres, auto_loot )
+    local source_guid, items, announcements = M.process_dropped_items( loot_list, master_loot_tracker, tooltip_reader, softres, auto_loot, config )
     local was_announced = announced_source_ids[ source_guid ]
     if was_announced then return end
 

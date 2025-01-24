@@ -15,7 +15,7 @@ local M = {}
 function M.new( db )
   local callbacks = {}
   local toggles = {
-    [ "auto_loot" ] = { cmd = "auto-loot", display = "Auto-loot", help = "toggle auto-loot", hidden = true },
+    [ "auto_loot" ] = { cmd = "auto-loot", display = "Auto-loot", help = "toggle auto-loot" },
     [ "show_ml_warning" ] = { cmd = "ml", display = "Master loot warning", help = "toggle master loot warning" },
     [ "auto_raid_roll" ] = { cmd = "auto-rr", display = "Auto raid-roll", help = "toggle auto raid-roll" },
     [ "auto_group_loot" ] = { cmd = "auto-group-loot", display = "Auto group loot", help = "toggle auto group loot" },
@@ -101,12 +101,24 @@ function M.new( db )
     info( string.format( "Master loot frame rows: %s", hl( db.master_loot_frame_rows ) ) )
   end
 
+  local function print_threshold_override()
+    local quality = db.loot_threshold_override
+    local str = m.msg.disabled
+    
+    if quality ~= nil then
+      str = m.quality_str( quality )
+    end
+
+    info( string.format( "Loot threshold override: %s", str ))
+  end
+
   local function print_settings()
     print_header( "RollFor Configuration" )
     print_default_rolling_time()
     print_master_loot_frame_rows()
     print_roll_thresholds()
     print_transmog_rolling_setting()
+    print_threshold_override()
     print_pfui_integration_setting()
 
     for toggle_key, setting in pairs( toggles ) do
@@ -204,6 +216,70 @@ function M.new( db )
     info( string.format( "Usage: %s <threshold>", hl( "/rf config tmog" ) ) )
   end
 
+  local function loot_threshold()
+    if db.loot_threshold_override ~= nil then
+      return db.loot_threshold_override
+    else
+      return m.api.GetLootThreshold()
+    end
+  end
+
+  local function print_loot_threshold()
+    local reason = grey("N/A")
+
+    if db.loot_threshold_override ~= nil then
+      reason = hl("config override")
+    elseif m.api.IsInGroup() then
+      reason = hl("group")
+    elseif m.api.IsInRaid() then
+      reason = hl("raid")
+    end
+
+    local quality = m.quality_str( loot_threshold() )
+
+    info ( string.format( "Loot threshold: %s from %s", quality, reason ) )
+  end
+
+  local function disable_loot_threshold_override()
+    db.loot_threshold_override = nil
+  end
+
+  local function configure_loot_threshold_override( args )
+    quality = string.lower(string.match(args, "^config threshold (.+)") or "")
+    
+    if quality == "" then
+      disable_loot_threshold_override()
+      print_threshold_override()
+    elseif quality == "0" or quality == "poor" or quality == "grey" or quality == "gray" then
+      db.loot_threshold_override = 0
+      print_threshold_override()
+    elseif quality == "1" or quality == "common" or quality == "white" then
+      db.loot_threshold_override = 1
+      print_threshold_override()
+    elseif quality == "2" or quality == "uncommon" or quality == "green" then
+      db.loot_threshold_override = 2
+      print_threshold_override()
+    elseif quality == "3" or quality == "rare" or quality == "blue" then
+      db.loot_threshold_override = 3
+      print_threshold_override()
+    elseif quality == "4" or quality == "epic" or quality == "purple" then
+      db.loot_threshold_override = 4
+      print_threshold_override()
+    elseif quality == "5" or quality == "legendary" or quality == "orange" then
+      db.loot_threshold_override = 5
+      print_threshold_override()
+    elseif quality == "6" or quality == "artifact" or quality == "yellow" then
+      db.loot_threshold_override = 6
+      print_threshold_override()
+    else
+      info( string.format( "Usage: %s <quality>", hl( "/rf config threshold" ) ) )
+    end
+
+    if m.is_player_master_looter() then
+      print_loot_threshold()
+    end
+  end
+
   local function print_help()
     local v = function( name ) return string.format( "%s%s%s", hl( "<" ), grey( name ), hl( ">" ) ) end
     local function rfc( cmd ) return string.format( "%s%s", blue( "/rf config" ), cmd and string.format( " %s", hl( cmd ) ) or "" ) end
@@ -221,6 +297,8 @@ function M.new( db )
     m.print( string.format( "%s %s - set OS rolling threshold ", rfc( "os" ), v( "threshold" ) ) )
     m.print( string.format( "%s - toggle TMOG rolling", rfc( "tmog" ) ) )
     m.print( string.format( "%s %s - set TMOG rolling threshold", rfc( "tmog" ), v( "threshold" ) ) )
+    m.print( string.format( "%s - disable loot threshold override", rfc( "threshold" )))
+    m.print( string.format( "%s %s - set loot threshold override", rfc( "threshold" ), v( "quality" )))
 
     if m.uses_pfui() then
       m.print( string.format( "%s - toggle %s integration", rfc( "pfui" ), m.msg.pfui ) )
@@ -350,6 +428,11 @@ function M.new( db )
       return
     end
 
+    if string.find( args, "^config threshold") then
+      configure_loot_threshold_override( args )
+      return
+    end
+
     print_help()
   end
 
@@ -393,6 +476,7 @@ function M.new( db )
     print = print,
     print_help = print_help,
     print_raid_roll_settings = printfn( "auto_raid_roll" ),
+    print_loot_threshold = print_loot_threshold,
     reset_rolling_popup = reset_rolling_popup,
     roll_threshold = roll_threshold,
     show_minimap_button = show_minimap_button,
@@ -405,6 +489,8 @@ function M.new( db )
     default_rolling_time_seconds = get( "default_rolling_time_seconds" ),
     master_loot_frame_rows = get( "master_loot_frame_rows" ),
     configure_master_loot_frame_rows = configure_master_loot_frame_rows,
+    loot_threshold_override = get("loot_threshold_override"),
+    loot_threshold = loot_threshold,
   }
 
   for toggle_key, _ in pairs( toggles ) do

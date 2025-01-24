@@ -202,7 +202,7 @@ local function create_components()
   M.softres_roll_gui_data = m.SoftResRollGuiData.new( M.softres, M.group_roster )
   M.tie_roll_gui_data = m.TieRollGuiData.new( M.group_roster )
 
-  M.dropped_loot_announce = m.DroppedLootAnnounce.new( M.loot_list, announce, M.dropped_loot, M.master_loot_tracker, M.softres, M.winner_tracker, M.auto_loot )
+  M.dropped_loot_announce = m.DroppedLootAnnounce.new( M.loot_list, announce, M.dropped_loot, M.master_loot_tracker, M.tooltip_reader, M.softres, M.winner_tracker, M.auto_loot, M.config )
   M.softres_gui = m.SoftResGui.new( M.api, M.import_encoded_softres_data, M.softres_check, M.softres, clear_data, M.dropped_loot_announce.reset )
   M.minimap_button = m.MinimapButton.new( M.api, db( "minimap_button" ), M.softres_gui.toggle, M.softres_check, M.config )
 
@@ -632,9 +632,16 @@ local function on_loot_method_changed()
   M.master_loot_warning.on_party_loot_method_changed()
 end
 
+local function on_loot_threshold_changed()
+  if m.is_player_master_looter() then
+    M.ace_timer.ScheduleTimer( M, M.config.print_loot_threshold, 0.1 )
+  end
+end
+
 local function on_master_looter_changed( player_name )
   if m.my_name() == player_name and m.is_master_loot() then
     M.ace_timer.ScheduleTimer( M, M.config.print_raid_roll_settings, 0.1 )
+    M.ace_timer.ScheduleTimer( M, M.config.print_loot_threshold, 0.2 )
     if M.config.pf_integration_info_showed() then return end
     M.ace_timer.ScheduleTimer( M, M.pfui_integration_dialog.on_master_loot, 3 )
   end
@@ -648,6 +655,11 @@ function M.on_chat_msg_system( message )
 
   if string.find( message, "^Looting changed to" ) then
     on_loot_method_changed()
+    return
+  end
+
+  if string.find( message, "^Loot threshold set to" ) then
+    on_loot_threshold_changed()
     return
   end
 

@@ -36,13 +36,13 @@ function M.new( loot_list, tooltip_reader, api, db, config )
 
     local zone_name = api().GetRealZoneText()
     local item_ids = items[ zone_name ] or {}
-    local threshold = m.api.GetLootThreshold()
+    local threshold = config.loot_threshold()
 
     for _, item in ipairs( loot_list.get_items() ) do
       local quality = item.quality or 0
 
-      if item.id and item.slot and not tooltip_reader.is_bop( item.slot ) then
-        if quality < threshold or config.auto_loot() and item_ids[ item.id ] then
+      if item.id and item.slot then
+        if ( config.auto_loot() and item_ids[ item.id ] ) or ( quality < threshold and not tooltip_reader.is_bop( item.slot ) ) then
           local index = find_my_candidate_index()
 
           if index then
@@ -50,7 +50,7 @@ function M.new( loot_list, tooltip_reader, api, db, config )
 
             local reason = "auto-loot"
             if quality < threshold then
-              reason = "quality"
+              reason = "quality < " .. tostring(threshold)
             end
 
             info( string.format( "Auto-looting %s due to %s", item.link, reason ) )
@@ -64,10 +64,10 @@ function M.new( loot_list, tooltip_reader, api, db, config )
     if api().SetAutoloot then
       for _, item in ipairs( loot_list.get_items() ) do
         if item.coin and item.slot and not item.id then
-          LootSlot(item.slot, 1)
+          api().LootSlot(item.slot, 1)
 
           local amount = string.gsub( string.gsub( item.amount_text, "\n", " " ), " $", "" )
-          info( string.format( "Split %s with raid", hl(amount) ) )
+          info( string.format( "Auto-looting %s", hl(amount) ) )
         end
       end
     end
