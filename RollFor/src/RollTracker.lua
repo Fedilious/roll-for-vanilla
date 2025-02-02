@@ -134,7 +134,7 @@ function M.new()
   end
 
   local function tick( seconds_left )
-    if status.type == S.InProgress then
+    if status and status.type == S.InProgress then
       status.seconds_left = seconds_left
     end
   end

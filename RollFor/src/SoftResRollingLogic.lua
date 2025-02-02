@@ -29,7 +29,7 @@ local function winner_found( rollers, rolls )
   return rlu.has_everyone_rolled( rollers, rolls ) and is_the_winner_the_only_player_with_extra_rolls( rollers, rolls )
 end
 
-function M.new( announce, ace_timer, group_roster, sr_players, item, count, seconds, on_rolling_finished, on_softres_rolls_available, roll_controller, config )
+function M.new( announce, ace_timer, group_roster, sr_players, item, count, seconds, on_rolling_finished, on_softres_rolls_available, roll_controller, item_notes, config )
   local rolls = {}
   local rolling = false
   local seconds_left = seconds
@@ -156,13 +156,17 @@ function M.new( announce, ace_timer, group_roster, sr_players, item, count, seco
     local x_rolls_win = count > 1 and string.format( ". %d top rolls win.", count ) or ""
     local ressed_by = m.prettify_table( map( sr_players, name_with_rolls ) )
 
+    local note = item_notes.get_note_softres( item )
+
     if count == getn( sr_players ) then
       announce( string.format( "%s soft-ressed %s.", ressed_by, item.link ), true )
+      if note then announce( note, true ) end
       roll_controller.start( RollingStrategy.SoftResRoll, item, count, nil, nil, sr_players )
       roll_controller.show()
       on_rolling_finished( item, 0, { ressed_by }, false, true )
     else
-      announce( string.format( "Roll for %s%s: (SR by %s)%s", count_str, item.link, ressed_by, x_rolls_win ), true )
+      local note_str = note and string.format( "%s ", note ) or ""
+      announce( string.format( "Roll for %s%s: %s(SR by %s)%s", count_str, item.link, note_str, ressed_by, x_rolls_win ), true )
       accept_rolls()
     end
   end

@@ -434,12 +434,20 @@ function M.mock_random_roll( player_name, roll, upper_bound )
   M.mock( "GetMasterLootCandidate", function() return {} end )
 end
 
+function M.clear_item_notes()
+  local rf = M.load_roll_for()
+  rf.char_db.item_notes = {
+    [ "items" ] = {}
+  }
+end
+
 function M.init()
   M.mock_api()
   M.fire_login_events()
   M.mock_messages()
   M.import_soft_res( nil )
   m_is_master_looter = false
+  M.clear_item_notes()
 end
 
 function M.fire_login_events()
@@ -795,7 +803,8 @@ function M.load_real_stuff( req )
   r( "src/WelcomePopup" )
   r( "src/InstaRaidRollRollingLogic" )
   r( "src/LootList" )
-  r( "src/TooltipReader" )
+  r( "src/ItemNotes" )
+  require( "mocks/TooltipReader" )
   -- r( "Libs/LibDeflate/LibDeflate" )
   r( "src/Json" )
   r( "main" )
@@ -1015,6 +1024,20 @@ end
 function M.clear_dropped_items_db()
   local rollfor = M.load_roll_for()
   rollfor.db.dropped_items = {}
+
+  return rollfor
+end
+
+function M.add_item_note( item_id, notes )
+  local rollfor = M.load_roll_for()
+  local db = rollfor.char_db
+
+  db.item_notes = db.item_notes or {}
+  db.item_notes.items = db.item_notes.items or {}
+  db.item_notes.items[ "Elwynn Forest" ] = db.item_notes.items[ "Elwynn Forest" ] or {}
+  db.item_notes.items[ "Elwynn Forest" ][ item_id ] = db.item_notes.items[ "Elwynn Forest" ][ item_id ] or {}
+
+  table.insert( db.item_notes.items[ "Elwynn Forest" ][ item_id ], notes )
 
   return rollfor
 end

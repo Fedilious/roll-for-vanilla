@@ -61,7 +61,7 @@ function M.the_only_sr_content( winner )
   return { type = "text", value = string.format( "%s is the only one %s.", player, soft_ressing ), padding = top_padding }
 end
 
-function M.new( popup, roll_controller, roll_tracker, config, finish_early, cancel_roll, raid_roll, master_loot_correlation_data )
+function M.new( popup, roll_controller, roll_tracker, config, finish_early, cancel_roll, raid_roll, master_loot_correlation_data, item_notes, tooltip_reader )
   local function rolls_content( result, rolls )
     local data = roll_tracker.get()
 
@@ -122,6 +122,16 @@ function M.new( popup, roll_controller, roll_tracker, config, finish_early, canc
     local roll_count = current_iteration and current_iteration.rolls and getn( current_iteration.rolls ) or 0
 
     table.insert( result, make_item( data.item ) )
+
+    local slot = master_loot_correlation_data.get( data.item.link )
+    if slot then
+      table.insert( result, { type = "text", value = tooltip_reader.short_description( slot.slot ), padding = 8 } )
+    end
+
+    local notes = item_notes.get_note_internal( data.item )
+    if notes then
+      table.insert( result, { type = "text", value = notes, padding = 8 } )
+    end
 
     if the_only_softres_winner( data, current_iteration ) then
       table.insert( result, M.the_only_sr_content( data.status.winner ) )

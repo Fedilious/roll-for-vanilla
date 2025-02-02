@@ -16,7 +16,7 @@ local RollingStrategy = m.Types.RollingStrategy
 ---@diagnostic disable-next-line: deprecated
 local getn = table.getn
 
-function M.new( announce, ace_timer, group_roster, item, count, info, seconds, on_rolling_finished, config, roll_controller )
+function M.new( announce, ace_timer, group_roster, item, count, info, seconds, on_rolling_finished, config, roll_controller, item_notes )
   local mainspec_rollers, mainspec_rolls = rlu.all_present_players( group_roster ), {}
   local offspec_rollers, offspec_rolls = rlu.copy_rollers( mainspec_rollers ), {}
   local tmog_rollers, tmog_rolls = rlu.copy_rollers( mainspec_rollers ), {}
@@ -135,10 +135,23 @@ function M.new( announce, ace_timer, group_roster, item, count, info, seconds, o
 
   local function announce_rolling()
     local count_str = count > 1 and string.format( "%sx", count ) or ""
-    local tmog_info = config.tmog_rolling_enabled() and string.format( " or /roll %s (TMOG)", config.tmog_roll_threshold() ) or ""
-    local default_ms = config.ms_roll_threshold() ~= 100 and string.format( "%s ", config.ms_roll_threshold() ) or ""
-    local roll_info = string.format( " /roll %s(MS) or /roll %s (OS)%s", default_ms, config.os_roll_threshold(), tmog_info )
-    local info_str = info and info ~= "" and string.format( " %s", info ) or roll_info
+
+    local info_str = ""
+
+    if info and info ~= "" then
+      info_str = string.format( " %s", info )
+    else
+      local notes = item_notes.get_note_non_softres( item )
+      
+      if notes then
+        info_str = string.format( " %s", notes )
+      else
+        local tmog_info = tmog_rolling_enabled and string.format( " or /roll %s (TMOG)", tmog_threshold ) or ""
+        local default_ms = ms_threshold ~= 100 and string.format( "%s ", ms_threshold ) or ""
+        info_str = string.format( " /roll %s(MS) or /roll %s (OS)%s", default_ms, os_threshold, tmog_info )
+      end
+    end
+
     local x_rolls_win = count > 1 and string.format( ". %d top rolls win.", count ) or ""
 
     announce( string.format( "Roll for %s%s:%s%s", count_str, item.link, info_str, x_rolls_win ), true )

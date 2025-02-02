@@ -3,6 +3,7 @@ package.path = "./?.lua;" .. package.path .. ";../?.lua;../RollFor/?.lua;../Roll
 local lu = require( "luaunit" )
 local tu = require( "test/utils" )
 tu.mock_wow_api()
+tu.mock_api()
 require( "src/modules" )
 local types = require( "src/Types" )
 local tracker_mod = require( "src/RollTracker" )
@@ -13,6 +14,8 @@ local softres_decorator = require( "src/SoftResPresentPlayersDecorator" )
 local softres_mod = require( "src/SoftRes" )
 local new = require( "src/RollingPopupContent" ).new
 local ItemUtils = require( "src/ItemUtils" )
+local TooltipReader = require( "mocks/TooltipReader" )
+local ItemNotes = require( "src/ItemNotes" )
 local make_item = ItemUtils.make_item
 local item_link = tu.item_link
 local sr = tu.soft_res_item
@@ -93,7 +96,9 @@ local function new_mod( config, finish_early, cancel_roll, raid_roll )
     finish_early or noop,
     cancel_roll or noop,
     raid_roll or noop,
-    ml_correlation_data.new( ItemUtils )
+    ml_correlation_data.new( ItemUtils ),
+    ItemNotes.new( function() return tu.modules().api end, {} ),
+    TooltipReader.new()
   )
 
   return popup, mod

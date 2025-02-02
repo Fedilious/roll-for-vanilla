@@ -50,7 +50,7 @@ function M.new( loot_list, tooltip_reader, api, db, config )
 
             local reason = "auto-loot"
             if quality < threshold then
-              reason = "quality < " .. tostring(threshold)
+              reason = "quality" --< " .. tostring(threshold)
             end
 
             info( string.format( "Auto-looting %s due to %s", item.link, reason ) )

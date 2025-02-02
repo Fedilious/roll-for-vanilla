@@ -93,6 +93,7 @@ local mock_config = function( config )
     insta_raid_roll = function() return true end,
     default_rolling_time_seconds = function() return 8 end,
     master_loot_frame_rows = function() return 5 end,
+    loot_threshold = function() return 2 end,
   }
 
   m.Config = {
@@ -566,7 +567,7 @@ utils.load_real_stuff( function( module_name )
   if module_name == "src/LootAwardPopup" then return require( "mocks/LootAwardPopupMock" ) end
   if module_name == "src/Config" then return mock_config() end
   if module_name == "src/LootList" then require( "mocks/LootList" ) end
-  if module_name == "src/TooltipReader" then require( "mocks/TooltipReader" ) end
+  -- if module_name == "src/TooltipReader" then require( "mocks/TooltipReader" ) end
   if module_name == "src/api/LootFacade" then
     ---@diagnostic disable-next-line: different-requires
     loot_event_facade = require( "mocks/LootFacade" )

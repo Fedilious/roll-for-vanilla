@@ -77,4 +77,5 @@ src\EventBus.lua
 src\LootList.lua
 src\LootListSoftresDecorator.lua
 src\TooltipReader.lua
+src\ItemNotes.lua
 main.lua

@@ -166,6 +166,7 @@ local function create_components()
     M.absent_softres, db( "softres_check" ) )
   M.winner_tracker = m.WinnerTracker.new( db( "winner_tracker" ) )
   M.tooltip_reader = m.TooltipReader.new()
+  M.item_notes = m.ItemNotes.new( M.api, db( "item_notes" ) )
 
   local loot_facade = m.LootFacade.new( m.EventFrame.new( m.api ), m.api )
   M.loot_list = m.LootList.new( loot_facade, M.item_utils, m.api )
@@ -217,7 +218,9 @@ local function create_components()
     on_finish_roll_command,
     on_cancel_roll_command,
     raid_roll_item,
-    M.master_loot_correlation_data
+    M.master_loot_correlation_data,
+    M.item_notes,
+    M.tooltip_reader
   )
 
   M.loot_award_popup = m.LootAwardPopup.new(
@@ -283,7 +286,7 @@ local function on_softres_rolls_available( rollers )
 end
 
 local function non_softres_rolling_logic( item, count, message, seconds, on_rolling_finished )
-  return m.NonSoftResRollingLogic.new( announce, M.ace_timer, M.group_roster, item, count, message, seconds, on_rolling_finished, M.config, M.roll_controller )
+  return m.NonSoftResRollingLogic.new( announce, M.ace_timer, M.group_roster, item, count, message, seconds, on_rolling_finished, M.config, M.roll_controller, M.item_notes )
 end
 
 local function soft_res_rolling_logic( item, count, message, seconds, on_rolling_finished )
@@ -304,6 +307,7 @@ local function soft_res_rolling_logic( item, count, message, seconds, on_rolling
     on_rolling_finished,
     on_softres_rolls_available,
     M.roll_controller,
+    M.item_notes,
     M.config
   )
 end
@@ -475,7 +479,10 @@ function M.on_rolling_finished( item, count, winners, rerolling, there_was_no_ro
 end
 
 local function announce_hr( item )
-  announce( string.format( "%s is hard-ressed.", item ), true )
+  local note = M.item_notes.get_note_hardres( item )
+  local note_str = note and string.format( ": %s", note ) or ""
+
+  announce( string.format( "%s is hard-ressed%s.", item.link, note_str ), true )
 end
 
 local function parse_args( args )
@@ -527,7 +534,7 @@ local function on_roll_command( roll_slash_command )
 
     --TODO: What if we wanted to bypass the hard-res?
     if M.softres.is_item_hardressed( item.id ) then
-      announce_hr( item.link )
+      announce_hr( item )
       return
     end
 

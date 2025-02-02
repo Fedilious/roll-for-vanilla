@@ -14,7 +14,7 @@ local bypass_dropdown_menu = false
 ---@diagnostic disable-next-line: deprecated
 local getn = table.getn
 
-function M.new( master_loot_candidates, award_item, master_loot_frame, master_loot_tracker, config, master_loot_correlation_data )
+function M.new( master_loot_candidates, award_item, master_loot_frame, master_loot_tracker, config, master_loot_correlation_data, roll_controller )
   local m_confirmed = nil
 
   local function reset_confirmation()
