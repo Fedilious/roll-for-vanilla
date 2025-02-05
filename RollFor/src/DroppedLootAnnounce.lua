@@ -191,8 +191,16 @@ function M.process_dropped_items( loot_list, master_loot_tracker, tooltip_reader
   local source_guid = loot_list.get_source_guid()
   local threshold = config.loot_threshold()
   local items = filter( loot_list.get_items(), function( item )
+    if item.coin then return false end
+
+    if item.id == 29434 then return false end
+
     local quality = item.quality or 0
-    return (quality >= threshold or tooltip_reader.is_bop( item.slot )) and not auto_loot.is_auto_looted(item.id) and item.id ~= 29434
+    if quality >= threshold then return true end
+
+    if tooltip_reader.is_bop( item.slot ) and quality >= 2 then return true end
+    
+    return false
   end )
 
   for _, item in ipairs( items ) do
