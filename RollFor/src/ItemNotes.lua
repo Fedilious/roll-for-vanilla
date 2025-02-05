@@ -4,6 +4,7 @@ local m = RollFor
 if m.ItemNotes then return end
 
 local M = {}
+local _G = getfenv( 0 )
 
 local item_utils = m.ItemUtils
 local info = m.pretty_print
@@ -65,10 +66,59 @@ function M.new( api, db )
   end
 
   local function get_note_internal( item )
-    return get_notes_and_filter( item, "\n", function( note )
-      return true
-    end )
+    local notes = get_notes( item )
+    local str = ""
+    local first = true
+    local separator = "\n"
+
+    for _, note in ipairs( notes ) do
+      if not first then
+        str = str .. separator
+      else
+        first = false
+      end
+
+      if note.hardres then
+        str = str .. hl( "(HR) " )
+      end
+
+      if note.softres then
+        str = str .. hl( "(SR) " )
+      end
+
+      if note.normal then
+        str = str .. hl( "(MS/OS) " )
+      end
+
+      str = str .. note.note
+    end
+
+    if str == "" then
+      return nil
+    end
+
+    return str
   end
+
+  local function on_command( args )
+    local zone_name = api().GetRealZoneText()
+    local item_ids = db.items[ zone_name ] or {}
+
+    for item_id, notes in pairs( item_ids ) do
+      local item_link = m.fetch_item_link_and_quality( item_id )
+
+      for _, note in ipairs( notes ) do
+        local descriptor_hr = note.hardres and hl(" (HR)") or ""
+        local descriptor_sr = note.softres and hl(" (SR)") or ""
+        local descriptor_normal = note.normal and hl(" (MS/OS)") or ""
+
+        info( string.format( "%s:%s%s%s %s", item_link, descriptor_hr, descriptor_sr, descriptor_normal, note.note ) )
+      end
+    end
+  end
+
+  _G[ "SLASH_RFNOTES1" ] = "/rfnotes"
+  _G[ "SlashCmdList" ][ "RFNOTES" ] = on_command
 
   return {
     get_note_non_softres = get_note_non_softres,
