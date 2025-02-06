@@ -195,6 +195,8 @@ function M.process_dropped_items( loot_list, master_loot_tracker, tooltip_reader
 
     if item.id == 29434 then return false end
 
+    if auto_loot.is_auto_looted(item.id) then return false end
+
     local quality = item.quality or 0
     if quality >= threshold then return true end
 
