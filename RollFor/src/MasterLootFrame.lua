@@ -64,7 +64,7 @@ local function create_main_frame()
     ---@diagnostic disable-next-line: undefined-global
     local button = pfLootButton1
     if button then
-      frame:SetFrameLevel( button:GetFrameLevel() + 1 )
+      frame:SetFrameLevel( button:GetFrameLevel() + 2 )
     end
   end
 
@@ -269,6 +269,23 @@ function M.new( winner_tracker, master_loot_correlation_data, roll_controller, c
     m.api.ChatFrameEditBox:SetText( string.format( "%s %s", slash_command, item_link ) )
   end
 
+  local function loot_button_action( reset_confirmation, normal_loot, show_loot_candidates_frame, hide_fn, button )
+    reset_confirmation()
+
+    local slot = button:GetID()
+
+    if m.api.LootSlotIsItem( slot ) then
+      local item_link = m.api.GetLootSlotLink( slot )
+      local texture = m.api.GetLootSlotInfo( slot )
+      local item_id = m.ItemUtils.get_item_id( item_link )
+      local item_name = m.ItemUtils.get_item_name( item_link )
+      local item = { id = item_id, link = item_link, name = item_name, texture = texture }
+
+      show_loot_candidates_frame( slot, item, button )
+      return
+    end
+  end
+
   local function hook_loot_buttons( reset_confirmation, normal_loot, show_loot_candidates_frame, hide_fn )
     for i = 1, m.api.LOOTFRAME_NUMBUTTONS do
       local name = "LootButton" .. i
@@ -364,17 +381,6 @@ function M.new( winner_tracker, master_loot_correlation_data, roll_controller, c
             return
           end
 
-          if m.api.LootSlotIsItem( slot ) then
-            local item_link = m.api.GetLootSlotLink( slot )
-            local texture = m.api.GetLootSlotInfo( slot )
-            local item_id = m.ItemUtils.get_item_id( item_link )
-            local item_name = m.ItemUtils.get_item_name( item_link )
-            local item = { id = item_id, link = item_link, name = item_name, texture = texture }
-
-            show_loot_candidates_frame( slot, item, button )
-            return
-          end
-
           hide_fn()
           normal_loot( self )
         end )
@@ -404,6 +410,7 @@ function M.new( winner_tracker, master_loot_correlation_data, roll_controller, c
   return {
     hook_loot_buttons = hook_loot_buttons,
     hook_pfui_loot_buttons = hook_pfui_loot_buttons,
+    loot_button_action = loot_button_action,
     restore_loot_buttons = restore_loot_buttons,
     create = create,
     create_candidate_frames = create_candidate_frames,

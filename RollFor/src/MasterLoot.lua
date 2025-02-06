@@ -21,15 +21,6 @@ function M.new( master_loot_candidates, award_item, master_loot_frame, master_lo
     m_confirmed = nil
   end
 
-  local function hook_toggle_dropdown_menu()
-    original_toggle_dropdown_menu = m.api.ToggleDropDownMenu
-
-    _G[ "ToggleDropDownMenu" ] = function( level, value, dropDownFrame, anchorName, xOffset, yOffset, menuList )
-      if config.pfui_integration_enabled() and bypass_dropdown_menu then return end
-      original_toggle_dropdown_menu( level, value, dropDownFrame, anchorName, xOffset, yOffset, menuList )
-    end
-  end
-
   local function on_loot_slot_cleared( slot )
     if not m_confirmed then
       master_loot_tracker.remove( slot )
@@ -67,6 +58,9 @@ function M.new( master_loot_candidates, award_item, master_loot_frame, master_lo
   end
 
   local function normal_loot( button )
+    -- Workaround for a pfUI workaround that drops the menu if 1 last remaining item is looted
+    UIDROPDOWNMENU_INIT_MENU = "GroupLootDropDown"
+
     reset_confirmation()
     button:OriginalOnClick()
   end
@@ -95,6 +89,20 @@ function M.new( master_loot_candidates, award_item, master_loot_frame, master_lo
     master_loot_frame.show( item.link )
   end
 
+  local function hook_toggle_pfui_dropdown_menu()
+    if original_toggle_dropdown_menu == nil then
+      original_toggle_dropdown_menu = m.api.ToggleDropDownMenu
+    end
+
+    _G[ "ToggleDropDownMenu" ] = function( level, value, dropDownFrame, anchorName, xOffset, yOffset, menuList )
+      if config.pfui_integration_enabled() and bypass_dropdown_menu then
+        master_loot_frame.loot_button_action(reset_confirmation, normal_loot, show_loot_candidates_frame, master_loot_frame.hide, anchorName)
+        return
+      end
+      original_toggle_dropdown_menu( level, value, dropDownFrame, anchorName, xOffset, yOffset, menuList )
+    end
+  end
+
   local function on_loot_opened()
     if not m.is_player_master_looter() then
       if buttons_hooked then
@@ -107,10 +115,10 @@ function M.new( master_loot_candidates, award_item, master_loot_frame, master_lo
 
     reset_confirmation()
 
-    if not original_toggle_dropdown_menu then hook_toggle_dropdown_menu() end
-    bypass_dropdown_menu = true
-
     if m.uses_pfui() and config.pfui_integration_enabled() then
+      hook_toggle_pfui_dropdown_menu()
+      bypass_dropdown_menu = true
+
       master_loot_frame.hook_pfui_loot_buttons( reset_confirmation, normal_loot, show_loot_candidates_frame, master_loot_frame.hide )
     else
       master_loot_frame.hook_loot_buttons( reset_confirmation, normal_loot, show_loot_candidates_frame, master_loot_frame.hide )
