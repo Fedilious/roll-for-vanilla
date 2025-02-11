@@ -3,6 +3,9 @@ local m = RollFor
 
 if m.ItemUtils then return end
 
+local red = m.colors.red
+local green = m.colors.green
+
 local M = {}
 
 ---@class LT
@@ -44,6 +47,22 @@ M.LootType = LootType
 ---| "DroppedItem"
 ---| "SoftRessedDroppedItem"
 ---| "HardRessedDroppedItem"
+
+---@class BT
+---@field BindOnPickup "BindOnPickup"
+---@field BindOnEquip "BindOnEquip"
+---@field Soulbound "Soulbound"
+---@field Quest "Quest"
+
+---@type BT
+local BindType = {
+  BindOnPickup = "BindOnPickup",
+  BindOnEquip = "BindOnEquip",
+  Soulbound = "Soulbound",
+  Quest = "Quest"
+}
+
+M.BindType = BindType
 
 ---@alias ItemQuality
 ---| 0 -- Poor
@@ -98,6 +117,7 @@ M.LootType = LootType
 ---  tooltip_link: TooltipItemLink,
 ---  quality: ItemQuality,
 ---  quantity: number,
+---  bind: BindType,
 ---  texture: string ): DroppedItem
 
 ---@alias MakeSoftRessedDroppedItemFn fun(
@@ -113,6 +133,8 @@ M.LootType = LootType
 ---@field parse_link fun( item_link: string ): ItemLink? -- Sometimes we need to parse the link from the "[Item Name]x4." string.
 ---@field parse_all_links fun( item_links: string ): ItemLink[]
 ---@field get_tooltip_link fun( item_link: ItemLink ): TooltipItemLink
+---@field bind_description fun( bind: BindType? ): string
+---@field bind_abbrev fun( bind: BindType? ): string
 ---@field make_item MakeItemFn
 ---@field make_dropped_item MakeDroppedItemFn
 ---@field make_softres_dropped_item MakeSoftRessedDroppedItemFn
@@ -163,6 +185,32 @@ function M.get_tooltip_link( item_link )
   return string.match( item_link, "|H(item:[^|]+)|h" )
 end
 
+---@param bind BindType?
+---@return string
+function M.bind_description( bind )
+  if bind == BindType.BindOnPickup or bind == BindType.Soulbound then
+    return red("Bind on Pickup")
+  elseif bind == BindType.BindOnEquip then
+    return green("Bind on Equip")
+  elseif bind == BindType.Quest then
+    return red("Quest Item")
+  else
+    return nil
+  end
+end
+
+---@param bind BindType?
+---@return string
+function M.bind_abbrev( bind )
+  if bind == BindType.BindOnPickup or bind == BindType.Soulbound or bind == BindType.Quest then
+    return red("BoP")
+  elseif bind == BindType.BindOnEquip then
+    return green("BoE")
+  else
+    return nil
+  end
+end
+
 ---@param id number
 ---@param name string
 ---@param link ItemLink
@@ -187,8 +235,9 @@ end
 ---@param quality ItemQuality?
 ---@param quantity number?
 ---@param texture string?
+---@param bind BindType?
 ---@return DroppedItem
-function M.make_dropped_item( id, name, link, tooltip_link, quality, quantity, texture )
+function M.make_dropped_item( id, name, link, tooltip_link, quality, quantity, texture, bind )
   return {
     id = id,
     name = name,
@@ -197,6 +246,7 @@ function M.make_dropped_item( id, name, link, tooltip_link, quality, quantity, t
     quality = quality,
     quantity = quantity,
     texture = texture,
+    bind = bind,
     type = LootType.DroppedItem
   }
 end

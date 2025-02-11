@@ -15,6 +15,7 @@ local button_visible = false
 local _G = getfenv( 0 )
 
 ---@class AutoLoot
+---@field is_auto_looted fun( item: DroppedItem ): boolean
 ---@field on_loot_opened fun()
 ---@field add fun( item_link: string )
 ---@field remove fun( item_link: string )
@@ -40,21 +41,47 @@ function M.new( loot_list, api, db, config )
     end
   end
 
-  local function on_auto_loot()
+  local function is_auto_looted( item )
+    if not config.auto_loot() then
+      return false
+    end
+
     local zone_name = api().GetRealZoneText()
     local item_ids = items[ zone_name ] or {}
-    local threshold = m.api.GetLootThreshold()
+    local threshold = api().GetLootThreshold()
+
+    local quality = item.quality or 0
+
+    if item_ids[ item.id ] then
+      return true
+    end
+
+    if item.bind == item_utils.BindType.BindOnPickup or item.bind == item_utils.BindType.Quest then
+      return false
+    end
+
+    if quality < threshold then
+      return true
+    end
+
+    return false
+  end
+
+  local function on_auto_loot()
+    if not config.auto_loot() then
+      return
+    end
 
     for _, item in ipairs( loot_list.get_items() ) do
-      local quality = item.quality or 0
       local slot = loot_list.get_slot( item.id )
 
       if item.id and slot then
-        if quality < threshold or config.auto_loot() and item_ids[ item.id ] then
+        if is_auto_looted( item ) then
           local index = find_my_candidate_index()
 
           if index then
             api().GiveMasterLoot( slot, index )
+            info( string.format( "%s %s.", grey("Auto-looted"), item.link ) )
           end
         end
       end
@@ -162,6 +189,7 @@ function M.new( loot_list, api, db, config )
 
   ---@type AutoLoot
   return {
+    is_auto_looted = is_auto_looted,
     on_loot_opened = on_loot_opened,
     add = add,
     remove = remove,
