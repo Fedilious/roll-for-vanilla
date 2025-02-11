@@ -41,6 +41,7 @@ function M.new( loot_list, api, db, config )
     end
   end
 
+  -- @param item DroppedItem
   local function is_auto_looted( item )
     if not config.auto_loot() then
       return false

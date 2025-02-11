@@ -98,7 +98,7 @@ local function create_components()
   M.item_utils = m.ItemUtils
 
   ---@type TooltipReader
-  M.tooltip_reader = m.TooltipReader.new( M.chat )
+  M.tooltip_reader = m.TooltipReader.new()
 
   -- TODO: Add type.
   M.version_broadcast = m.VersionBroadcast.new( db( "version_broadcast" ), M.player_info, version.str )
@@ -154,13 +154,13 @@ local function create_components()
     local result = {}
     ---@type MakeDroppedItemFn
     local make_dropped_item = m.ItemUtils.make_dropped_item
-    local bop = m.ItemUtils.BindType.BindOnPickup
+    local boe = m.ItemUtils.BindType.BindOnEquip
 
     ---@diagnostic disable-next-line: unused-local
     for i, item_id in ipairs( ids ) do
       local name, tooltip_link, quality, _, _, _, _, _, texture = m.api.GetItemInfo( item_id )
       local link = item_link( name, item_id, quality )
-      local item = make_dropped_item( item_id, name, link, tooltip_link, quality, 1, texture, bop )
+      local item = make_dropped_item( item_id, name, link, tooltip_link, quality, 1, texture, boe )
 
       table.insert( result, item )
     end
@@ -174,7 +174,7 @@ local function create_components()
   M.raw_loot_list = m.LootList.new( M.loot_facade, M.item_utils, M.tooltip_reader ) --, get_dummy_items )
 
   ---@type SoftResLootList
-  M.loot_list = m.SoftResLootListDecorator.new( M.raw_loot_list, M.softres, M.tooltip_reader )
+  M.loot_list = m.SoftResLootListDecorator.new( M.raw_loot_list, M.softres )
 
   ---@type MasterLootCandidates
   M.master_loot_candidates = m.MasterLootCandidates.new( M.api(), M.group_roster ) -- remove group_roster for testing (dummy candidates)

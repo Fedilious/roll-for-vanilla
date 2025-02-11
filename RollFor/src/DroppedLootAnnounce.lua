@@ -191,7 +191,11 @@ function M.process_dropped_items( loot_list, softres, auto_loot )
   local source_guid = loot_list.get_source_guid()
   local threshold = m.api.GetLootThreshold()
   local items = filter( loot_list.get_items(), function( item )
-    return not auto_loot.is_auto_looted( item ) and item.id ~= 29434
+    if auto_loot.is_auto_looted(item) or item.id == 29434 then return false end
+
+    local quality = item.quality or 0
+
+    return quality >= threshold
   end )
 
   local summary = M.create_item_summary( items, softres )

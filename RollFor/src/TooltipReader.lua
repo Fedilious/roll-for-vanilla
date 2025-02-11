@@ -4,8 +4,6 @@ local m = RollFor
 if m.TooltipReader then return end
 
 local item_utils = m.ItemUtils
-local green = m.colors.green
-local red = m.colors.red
 
 local M = {}
 local _G = getfenv( 0 )

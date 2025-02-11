@@ -149,6 +149,7 @@ function M.mock_wow_api()
       SetBackdropBorderColor = function() end,
       SetFrameStrata = function() end,
       SetFrameLevel = function() end,
+      SetOwner = function() end,
       RegisterForClicks = function() end,
       RegisterForDrag = function() end,
       SetHighlightTexture = function() end,
@@ -191,6 +192,8 @@ function M.mock_wow_api()
       SetAutoFocus = function() end,
       SetFontObject = function() end,
       UpdateScrollChildRect = function() end,
+      ClearLines = function() end,
+      NumLines = function() return 0 end,
       SetText = function( self, text )
         self.text = text
         if self.OnTextChangedCallback then self.OnTextChangedCallback() end
@@ -216,7 +219,8 @@ function M.mock_wow_api()
       end,
       Click = function( self )
         if self.OnClickCallback then self:OnClickCallback() end
-      end
+      end,
+      SetLootItem = function() end,
     }
 
     if frame_name then _G[ frame_name ] = frame end
