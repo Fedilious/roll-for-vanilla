@@ -11,6 +11,12 @@ local grey = m.colors.grey
 local getn = table.getn
 
 local M = {}
+
+M.interface = {
+  on_loot_opened = "function",
+  loot_item = "function"
+}
+
 local button_visible = false
 local _G = getfenv( 0 )
 
@@ -23,7 +29,7 @@ local _G = getfenv( 0 )
 ---@field loot_item fun( slot: number )
 
 ---@param loot_list LootList
----@param api table
+---@param api function
 ---@param db table
 ---@param config Config
 function M.new( loot_list, api, db, config, player_info )

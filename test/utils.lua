@@ -306,7 +306,6 @@ function M.mock_api()
   M.mock( "InCombatLockdown", false )
   M.mock( "UnitName", "Psikutas" )
   M.mock( "UnitClass", "Warrior" )
-  M.mock( "GetRealZoneText", "Elwynn Forest" )
   M.mock( "UnitIsPartyLeader", false )
 
   -- Loot Interface
@@ -316,6 +315,7 @@ function M.mock_api()
   M.mock( "LootSlotIsCoin" )
   M.mock( "GetNumLootItems" )
 
+  M.zone_name()
   M.loot_threshold( 2 )
   M.mock_loot_frame()
 end
@@ -599,6 +599,10 @@ M.LootQuality = {
 
 function M.loot_threshold( threshold )
   M.mock( "GetLootThreshold", threshold )
+end
+
+function M.zone_name( zone )
+  M.mock( "GetRealZoneText", zone or "Elwynn Forest" )
 end
 
 function M.mock_blizzard_loot_buttons()

@@ -16,7 +16,7 @@ local function create_tooltip_frame()
 end
 
 ---@class TooltipReader
----@field get_slot_bind_type fun( number? ): BindType
+---@field get_slot_bind_type fun( number? ): BindType?
 
 ---@param api table
 function M.new( api )
@@ -35,6 +35,7 @@ function M.new( api )
         m_frame:SetLootItem( slot )
     end
 
+    ---@return BindType?
     local function get_item_type_from_tooltip()
         if m_frame:NumLines() < 1 then
             -- Probably the slot is invalid
