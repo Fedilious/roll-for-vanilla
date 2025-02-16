@@ -62,6 +62,7 @@ function M.new( api )
         return get_item_type_from_tooltip()
     end
 
+    ---@type TooltipReader
     return {
         get_slot_bind_type = get_slot_bind_type
     }

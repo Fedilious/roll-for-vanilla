@@ -437,7 +437,7 @@ function M.dropped_item( parent, text )
     item = v
     container.index.text:SetText( v.index )
     container.icon.texture:SetTexture( v.texture )
-    container.text:SetText( m.colorize_item_by_quality( v.name, v.quality ))
+    container.text:SetText( m.colorize_item_by_quality( v.name, v.quality ) )
     container.text:ClearAllPoints()
 
     if v.bind then

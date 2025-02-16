@@ -12,9 +12,6 @@ local u = require( "test/utils" )
 ---@class AutoLootMock : AutoLoot
 
 function M.new( loot_list, api, db, config, player_info )
-  -- local api = function() return {
-  --   GetRealZoneText = function() return "Elwynn Forest" end
-  -- } end
   _G[ "SlashCmdList" ] = {}
 
   local real_auto_loot = RealAutoLoot.new( loot_list, function() return api end, db, config, player_info )

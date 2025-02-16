@@ -17,11 +17,11 @@ local getn = table.getn
 
 ---@param loot_facade LootFacade
 ---@param item_utils ItemUtils
+---@param tooltip_reader TooltipReader
 ---@return LootList
 function M.new( loot_facade, item_utils, tooltip_reader, dummy_items_fn )
   interface.validate( loot_facade, m.LootFacade.interface )
   interface.validate( item_utils, m.ItemUtils.interface )
-  interface.validate( tooltip_reader, m.TooltipReader.interface )
 
   ---@alias Slot number
   ---@type table<Slot, Coin|DroppedItem>

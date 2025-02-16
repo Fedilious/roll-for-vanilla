@@ -93,6 +93,7 @@ M.BindType = BindType
 ---@class DroppedItem : Item
 ---@field tooltip_link TooltipItemLink
 ---@field quantity number
+---@field bind BindType?
 ---@field type "DroppedItem"
 
 ---@class HardRessedDroppedItem : DroppedItem

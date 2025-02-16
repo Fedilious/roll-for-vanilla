@@ -231,7 +231,7 @@ local function create_components()
     M.roll_controller
   )
 
-  -- TODO: Add type.
+  ---@type AutoLoot
   M.auto_loot = m.AutoLoot.new( M.loot_list, M.api, db( "auto_loot" ), M.config, M.player_info )
 
   ---@type DroppedLootAnnounce

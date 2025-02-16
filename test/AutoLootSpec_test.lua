@@ -6,7 +6,6 @@ local builder = require( "test/IntegrationTestBuilder" )
 local ItemUtils = require( "src/ItemUtils" )
 local new_roll_for = builder.new_roll_for
 local qi = builder.qi
-local gui = require( "test/gui_helpers" )
 local boe, bop, quest = ItemUtils.BindType.BindOnEquip, ItemUtils.BindType.BindOnPickup, ItemUtils.BindType.Quest
 
 AutoLootSpec = {}
