@@ -6,6 +6,8 @@ if m.DroppedLootAnnounce then return end
 local M = {}
 local announce_limit = 6
 local filter = m.filter
+local BindType = m.ItemUtils.BindType
+local ItemQuality = m.Types.ItemQuality
 
 ---@diagnostic disable-next-line: deprecated
 local getn = table.getn
@@ -194,6 +196,10 @@ function M.process_dropped_items( loot_list, softres, auto_loot )
     if auto_loot.is_auto_looted(item) or item.id == 29434 then return false end
 
     local quality = item.quality or 0
+
+    if item.bind == BindType.BindOnPickup and quality >= ItemQuality.Uncommon then
+      return true
+    end
 
     return quality >= threshold
   end )

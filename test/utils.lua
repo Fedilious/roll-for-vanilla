@@ -887,8 +887,8 @@ function M.rolling_finished()
   return M.console_message( string.format( "RollFor: Rolling for [%s] finished.", m_rolling_item_name ) )
 end
 
-function M.item( name, id, quality )
-  return { name = name, id = id, source_id = 123, quality = quality or 4, link = M.item_link( name, id ) }
+function M.item( name, id, quality, bind_type )
+  return { name = name, id = id, source_id = 123, quality = quality or 4, link = M.item_link( name, id ), bind = bind_type }
 end
 
 function M.targetting_enemy( name )
