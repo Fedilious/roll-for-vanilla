@@ -64,6 +64,12 @@ local BindType = {
 
 M.BindType = BindType
 
+---@alias BindType
+---| "BindOnPickup"
+---| "BindOnEquip"
+---| "Soulbound"
+---| "Quest"
+
 ---@alias ItemQuality
 ---| 0 -- Poor
 ---| 1 -- Common
@@ -186,7 +192,7 @@ function M.get_tooltip_link( item_link )
 end
 
 ---@param bind BindType?
----@return string
+---@return string?
 function M.bind_description( bind )
   if bind == BindType.BindOnPickup or bind == BindType.Soulbound then
     return red("Bind on Pickup")
@@ -200,7 +206,7 @@ function M.bind_description( bind )
 end
 
 ---@param bind BindType?
----@return string
+---@return string?
 function M.bind_abbrev( bind )
   if bind == BindType.BindOnPickup or bind == BindType.Soulbound or bind == BindType.Quest then
     return red("BoP")

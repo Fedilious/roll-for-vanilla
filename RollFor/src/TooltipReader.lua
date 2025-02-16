@@ -10,15 +10,16 @@ local _G = getfenv( 0 )
 
 local function create_tooltip_frame()
   local frame = m.api.CreateFrame( "GameTooltip", "RollForTooltipFrame", nil, "GameTooltipTemplate" )
-  frame:SetOwner( WorldFrame, "ANCHOR_NONE" );
+  frame:SetOwner( m.api.WorldFrame, "ANCHOR_NONE" );
 
   return frame
 end
 
 ---@class TooltipReader
----@field m_frame Frame
----@field get_slot_bind_type fun( number? ): ItemUtils.BindType
-function M.new( )
+---@field get_slot_bind_type fun( number? ): BindType
+
+---@param api table
+function M.new( api )
     local m_frame
 
     local function ensure_frame()
@@ -45,9 +46,9 @@ function M.new( )
 
         local line = _G["RollForTooltipFrameTextLeft2"]:GetText()
 
-        if line == ITEM_BIND_ON_PICKUP or line == ITEM_SOULBOUND then
+        if line == api.ITEM_BIND_ON_PICKUP or line == api.ITEM_SOULBOUND then
             return item_utils.BindType.BindOnPickup
-        elseif line == ITEM_BIND_QUEST then
+        elseif line == api.ITEM_BIND_QUEST then
             return item_utils.BindType.Quest
         else
             return item_utils.BindType.BindOnEquip

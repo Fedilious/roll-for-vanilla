@@ -98,7 +98,7 @@ local function create_components()
   M.item_utils = m.ItemUtils
 
   ---@type TooltipReader
-  M.tooltip_reader = m.TooltipReader.new()
+  M.tooltip_reader = m.TooltipReader.new( M.api() )
 
   -- TODO: Add type.
   M.version_broadcast = m.VersionBroadcast.new( db( "version_broadcast" ), M.player_info, version.str )
@@ -232,7 +232,7 @@ local function create_components()
   )
 
   -- TODO: Add type.
-  M.auto_loot = m.AutoLoot.new( M.loot_list, M.api, db( "auto_loot" ), M.config )
+  M.auto_loot = m.AutoLoot.new( M.loot_list, M.api, db( "auto_loot" ), M.config, M.player_info )
 
   ---@type DroppedLootAnnounce
   M.dropped_loot_announce = m.DroppedLootAnnounce.new( M.loot_list, M.chat, M.dropped_loot, M.softres, M.winner_tracker, M.player_info, M.auto_loot )

@@ -45,6 +45,7 @@ function M.new( loot_list, api, db, config, player_info )
   local function is_auto_looted( item )
     if not config.auto_loot() then
       return false
+    end
 
     local zone_name = api().GetRealZoneText()
     local item_ids = items[ zone_name ] or {}
@@ -68,7 +69,7 @@ function M.new( loot_list, api, db, config, player_info )
   end
 
   local function on_auto_loot()
-    if not config.auto_loot() then
+    if not player_info.is_master_looter() or not config.auto_loot() then
       return
     end
 
@@ -92,7 +93,7 @@ function M.new( loot_list, api, db, config, player_info )
 
           if index then
             api().GiveMasterLoot( slot, index )
-            info( string.format( "%s %s.", grey("Auto-looted"), item.link ) )
+            info( string.format( "Auto-looting %s.", item.link ) )
           end
         end
       end
