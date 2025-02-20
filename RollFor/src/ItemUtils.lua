@@ -124,8 +124,8 @@ M.BindType = BindType
 ---  tooltip_link: TooltipItemLink,
 ---  quality: ItemQuality,
 ---  quantity: number,
----  bind: BindType,
----  texture: string ): DroppedItem
+---  texture: string,
+---  bind: BindType?, ): DroppedItem
 
 ---@alias MakeSoftRessedDroppedItemFn fun(
 ---  item: DroppedItem,
@@ -276,6 +276,7 @@ function M.make_softres_dropped_item( item, sr_players )
     quality = item.quality,
     quantity = item.quantity,
     texture = item.texture,
+    bind = item.bind,
     sr_players = players,
     type = LootType.SoftRessedDroppedItem
   }
@@ -292,6 +293,7 @@ function M.make_hardres_dropped_item( item )
     quality = item.quality,
     quantity = item.quantity,
     texture = item.texture,
+    bind = item.bind,
     type = LootType.HardRessedDroppedItem
   }
 end
