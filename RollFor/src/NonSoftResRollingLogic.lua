@@ -220,6 +220,12 @@ function M.new(
     local info_str = info_or_note and info_or_note ~= "" and string.format( " %s", info_or_note ) or roll_info
     local x_rolls_win = item_count > 1 and string.format( ". %d top rolls win.", item_count ) or ""
 
+    if item.classes and config.auto_class_announce() then
+      local class_str = table.concat( item.classes, "s, " )
+      class_str = string.gsub( class_str, ", (%S+)$", " and %1" )
+      info_str = string.format( " %ss", class_str )
+    end
+
     chat.announce( string.format( "Roll for %s%s:%s%s", count_str, item.link, info_str, x_rolls_win ), true )
     accept_rolls()
   end
