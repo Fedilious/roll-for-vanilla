@@ -43,7 +43,8 @@ function M.new(
     winner_tracker,
     config,
     softres,
-    player_info
+    player_info,
+    item_notes
 )
   ---@param item Item
   ---@param item_count number
@@ -67,7 +68,8 @@ function M.new(
       seconds,
       on_rolling_finished,
       config,
-      roll_controller_facade
+      roll_controller_facade,
+      item_notes
     )
   end
 
@@ -106,7 +108,8 @@ function M.new(
       config,
       winner_tracker,
       master_loot_candidates,
-      roll_controller_facade
+      roll_controller_facade,
+      item_notes
     ), softressing_players
   end
 

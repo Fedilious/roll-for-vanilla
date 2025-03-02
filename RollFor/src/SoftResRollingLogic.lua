@@ -101,7 +101,8 @@ function M.new(
     config,
     winner_tracker,
     master_loot_candidates,
-    controller
+    controller,
+    item_notes
 )
   local rolls = {}
   local rolling = false
@@ -245,11 +246,13 @@ function M.new(
 
   local function start_rolling()
     local count_str = item_count > 1 and string.format( "%sx", item_count ) or ""
-    local x_rolls_win = item_count > 1 and string.format( ". %d top rolls win.", item_count ) or ""
+    local x_rolls_win = item_count > 1 and string.format( " %d top rolls win.", item_count ) or ""
     local ressed_by = m.prettify_table( map( players, format_name_with_rolls ) )
+    local note = item_notes.get_note_softres( item )
+    local note_str = note and string.format( " %s", note ) or ""
 
     if player_count ~= item_count then
-      chat.announce( string.format( "Roll for %s%s: SR by %s%s", count_str, item.link, ressed_by, x_rolls_win ), true )
+      chat.announce( string.format( "Roll for %s%s: SR by %s.%s%s", count_str, item.link, ressed_by, x_rolls_win, note_str ), true )
       accept_rolls()
       return
     end

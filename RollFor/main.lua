@@ -116,6 +116,8 @@ local function create_components()
   ---@type TooltipReader
   M.tooltip_reader = m.TooltipReader.new( M.api() )
 
+  M.item_notes = m.ItemNotes.new ( M.api(), db( "item_notes" ) )
+
   -- TODO: Add type.
   M.version_broadcast = m.VersionBroadcast.new( db( "version_broadcast" ), M.player_info, version.str )
 
@@ -211,7 +213,7 @@ local function create_components()
   local rolling_popup_db = db( "rolling_popup" )
 
   ---@type RollingPopupContentTransformer
-  local rolling_popup_content_transformer = m.RollingPopupContentTransformer.new( M.config )
+  local rolling_popup_content_transformer = m.RollingPopupContentTransformer.new( M.config, M.item_notes )
 
   ---@type RollingPopup
   M.rolling_popup = m.RollingPopup.new(
@@ -321,7 +323,8 @@ local function create_components()
     M.winner_tracker,
     M.config,
     M.softres,
-    M.player_info
+    M.player_info,
+    M.item_notes
   )
 
   ---@type RollingLogic
@@ -350,7 +353,7 @@ local function create_components()
   M.args_parser = m.ArgsParser.new( m.ItemUtils, M.config )
 
   -- TODO: Add type.
-  M.roll_result_announcer = m.RollResultAnnouncer.new( M.chat, M.roll_controller, M.softres, M.config )
+  M.roll_result_announcer = m.RollResultAnnouncer.new( M.chat, M.roll_controller, M.softres, M.config, M.item_notes )
 
   M.loot_facade_listener = m.LootFacadeListener.new(
     M.loot_facade,
@@ -533,7 +536,7 @@ local function on_roll( player_name, roll, min, max )
 end
 
 local function on_loot_threshold_changed()
-  if m.is_player_master_looter() then
+  if M.player_info.is_master_looter() and m.is_master_loot() then
     M.ace_timer.ScheduleTimer( M, M.config.print_loot_threshold, 0.1 )
   end
 end

@@ -91,5 +91,6 @@ src\UiReloadPopup.lua
 src\Sandbox.lua
 src\ModernLootFrameSkin.lua
 src\OgLootFrameSkin.lua
+src\ItemNotes.lua
 
 main.lua

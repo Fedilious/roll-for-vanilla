@@ -272,6 +272,22 @@ function M.fetch_item_link( item_id, quality )
   end
 end
 
+
+function M.fetch_item_link_and_quality( item_id )
+  if not item_id then return end
+
+  local id = tonumber( item_id )
+  if not id or id == 0 then return end
+
+  local name, details, quality = M.api.GetItemInfo( tonumber( item_id ) )
+
+  if not name or not details then
+    return
+  end
+
+  return string.format( "%s|H%s|h[%s]|h|r", M.api.ITEM_QUALITY_COLORS[ quality or 0 ].hex, details, name )
+end
+
 function M.set_game_tooltip_with_item_id( item_id )
   M.api.GameTooltip:SetHyperlink( string.format( "item:%s:0:0:0:0:0:0:0", item_id ) )
 end

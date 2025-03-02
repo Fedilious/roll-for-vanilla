@@ -50,7 +50,7 @@ local top_padding = 11
 
 ---@param config Config
 ---@diagnostic disable-next-line: unused-local
-function M.new( config )
+function M.new( config, item_notes )
   ---@param on_click fun()
   local function award_winner_button( on_click )
     return { type = "award_button", label = "Award", width = 90, on_click = on_click, padding = 6 }
@@ -70,6 +70,13 @@ function M.new( config )
     table.insert( content, { type = "empty_line", height = height, padding = padding } )
   end
 
+  local function add_item_notes ( content, item )
+    local info = item_notes.get_note_internal( item )
+    if info then
+      table.insert( content, { type = "text", value = info, padding = 5 } )
+    end
+  end
+
   ---@param content table
   ---@param item_link ItemLink
   ---@param item_tooltip_link TooltipItemLink
@@ -84,6 +91,9 @@ function M.new( config )
       count = item_count,
       padding = 5
     } )
+
+    local item = { id = m.ItemUtils.get_item_id( item_link ), link = item_link }
+    add_item_notes( content, item )
   end
 
   ---@param content table
