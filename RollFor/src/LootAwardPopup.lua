@@ -15,6 +15,8 @@ local c = m.colorize_player_by_class
 local r = m.roll_type_color
 local possesive_case = m.possesive_case
 local article = m.article
+local hl = m.colors.hl
+local info = m.pretty_print
 
 local button_defaults = {
   width = 80,
@@ -148,6 +150,13 @@ function M.new( popup_builder, config, rolling_popup )
     end
 
     table.insert( content, { type = "button", label = "Yes", width = 80, on_click = data.confirm_fn } )
+    table.insert( content, { type = "button", label = "Set as TRADE rx", width = 160, on_click = function()
+      global_trade_message = name
+      info( string.format( "Trade %s the item.", hl( name ) ) )
+      on_hide = nil
+      data.abort_fn()
+    end
+    } )
     table.insert( content, {
       type = "button",
       label = "No",

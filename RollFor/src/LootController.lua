@@ -306,6 +306,8 @@ function M.new( player_info, loot_facade, loot_list, loot_frame, roll_controller
   end
 
   local function on_loot_opened()
+    global_trade_message = nil
+
     M.debug.add( "loot_opened" )
     show()
     update()

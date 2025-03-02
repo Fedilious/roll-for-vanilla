@@ -14,6 +14,7 @@ local horizontal_padding = 3
 local vertical_padding = 5
 
 local info = m.pretty_print
+local hl = m.colors.hl
 
 local mod, getn = m.mod, m.getn
 
@@ -127,6 +128,9 @@ local function create_button( parent, index, rows )
     end
 
     if button == "LeftButton" then press( self ) end
+    if button == "RightButton" and self.tmog_fn then
+      self.tmog_fn()
+    end
   end )
 
   frame:SetScript( "OnMouseUp", function( self, button )
@@ -221,6 +225,12 @@ function M.new( frame_builder, config, db, player_info )
         button.unmark_winner()
       end
 
+      button.tmog_fn = function()
+        local recipient = candidate.name
+        global_trade_message = recipient
+        info( string.format( "Trade %s the item.", hl( recipient ) ) )
+      end
+
       button:Show()
     end
 
@@ -284,7 +294,7 @@ function M.new( frame_builder, config, db, player_info )
     resize_frame( total, rows )
   end )
 
-  local function on_command( msg )
+  local function on_command( args )
     for player_name in string.gmatch( args, "add (.*)" ) do
       table.insert( db.player_names, player_name )
       return
@@ -304,7 +314,7 @@ function M.new( frame_builder, config, db, player_info )
     info( string.format( "Usage: %s %s", hl( "/rfprio <add||remove>" ), hl( "<player_name>" ) ) )
   end
 
-  _G[ "SLASH_RFAL1" ] = "/rfprio"
+  _G[ "SLASH_RFPRIO1" ] = "/rfprio"
   _G[ "SlashCmdList" ][ "RFPRIO" ] = on_command
 
   ---@type MasterLootCandidateSelectionFrame

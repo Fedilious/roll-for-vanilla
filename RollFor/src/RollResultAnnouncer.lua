@@ -210,6 +210,11 @@ function M.new( chat, roll_controller, softres, config, item_notes )
   local function on_loot_awarded( data )
     local player_name = data.player_class and m.colorize_player_by_class( data.player_name, data.player_class ) or grey( data.player_name )
     chat.info( string.format( "%s received %s.", player_name, data.item_link ) )
+
+    if global_trade_message then
+      chat.announce( string.format( "%s please trade %s to: %s", player_name, data.item_link, global_trade_message ) )
+      global_trade_message = nil
+    end
   end
 
   roll_controller.subscribe( "finish", on_finish )
