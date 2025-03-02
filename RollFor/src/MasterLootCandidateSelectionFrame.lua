@@ -13,7 +13,11 @@ local horizontal_margin = 5
 local horizontal_padding = 3
 local vertical_padding = 5
 
+local info = m.pretty_print
+
 local mod, getn = m.mod, m.getn
+
+local _G = getfenv( 0 )
 
 local function highlight( frame )
   frame:SetBackdropColor( frame.color.r, frame.color.g, frame.color.b, 0.3 )
@@ -160,7 +164,9 @@ end
 
 ---@param frame_builder FrameBuilderFactory
 ---@param config Config
-function M.new( frame_builder, config )
+function M.new( frame_builder, config, db, player_info )
+  db.player_names = db.player_names or {}
+
   local m_frame
   local m_buttons = {}
 
@@ -197,7 +203,10 @@ function M.new( frame_builder, config )
       button.color = color
       button.player = candidate
 
-      if color then
+      if candidate.priority then
+        button.text:SetTextColor( 1, 0.25, 0.1 )
+        dim( button )
+      elseif color then
         button.text:SetTextColor( color.r, color.g, color.b )
         dim( button )
       else
@@ -206,7 +215,7 @@ function M.new( frame_builder, config )
 
       button:SetScript( "OnClick", candidate.confirm_fn )
 
-      if candidate.is_winner then
+      if candidate.is_winner or candidate.priority then
         button.mark_winner()
       else
         button.unmark_winner()
@@ -215,7 +224,7 @@ function M.new( frame_builder, config )
       button:Show()
     end
 
-    for i = 1, 40 do
+    for i = 1, 60 do
       loop( i )
     end
   end
@@ -224,7 +233,34 @@ function M.new( frame_builder, config )
   local function show( candidates )
     if not m_frame then m_frame = create_main_frame( frame_builder, config ) end
 
-    create_candidate_frames( candidates )
+    candidates_decorated = {}
+
+    for _, candidate in ipairs( candidates ) do
+      if candidate.name == player_info.get_name() then
+        local candidate2 = m.clone(candidate)
+        candidate2.priority = true
+        candidate2.confirm_fn = candidate2.force_award_fn
+
+        table.insert( candidates_decorated, candidate2 )
+      else
+        for _, player_name in ipairs( db.player_names ) do
+          if candidate.name == player_name then
+            local candidate2 = m.clone(candidate)
+            candidate2.priority = true
+            candidate2.confirm_fn = candidate2.force_award_fn
+
+            table.insert( candidates_decorated, candidate2 )
+            break
+          end
+        end
+      end
+    end
+
+    for _, candidate in ipairs( candidates ) do
+      table.insert( candidates_decorated, candidate )
+    end
+
+    create_candidate_frames( candidates_decorated )
     m_frame:Show()
   end
 
@@ -247,6 +283,29 @@ function M.new( frame_builder, config )
 
     resize_frame( total, rows )
   end )
+
+  local function on_command( msg )
+    for player_name in string.gmatch( args, "add (.*)" ) do
+      table.insert( db.player_names, player_name )
+      return
+    end
+
+    for player_name in string.gmatch( args, "remove (.*)" ) do
+      for i, name in ipairs( db.player_names ) do
+        if name == player_name then
+          table.remove( db.player_names, i )
+          return
+        end
+      end
+
+      info( string.format( "Player %s not found in the list.", hl( player_name ) ) )
+    end
+
+    info( string.format( "Usage: %s %s", hl( "/rfprio <add||remove>" ), hl( "<player_name>" ) ) )
+  end
+
+  _G[ "SLASH_RFAL1" ] = "/rfprio"
+  _G[ "SlashCmdList" ][ "RFPRIO" ] = on_command
 
   ---@type MasterLootCandidateSelectionFrame
   return {

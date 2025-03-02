@@ -353,6 +353,14 @@ function M.new(
               confirm_fn = function()
                 player_selection_frame.hide()
                 show_master_loot_confirmation( candidate, dropped_item, strategy_type )
+              end,
+              force_award_fn = function()
+                player_selection_frame.hide()
+                if dropped_item.bind == "BindOnPickup" then --TODO use enum
+                  show_master_loot_confirmation( candidate, dropped_item, strategy_type )
+                else
+                  award_confirmed( candidate, dropped_item )
+                end
               end
             }
           end )

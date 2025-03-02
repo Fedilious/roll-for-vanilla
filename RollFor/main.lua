@@ -208,7 +208,7 @@ local function create_components()
   M.master_loot_candidates = m.MasterLootCandidates.new( M.api(), M.group_roster, M.raw_loot_list ) -- remove group_roster for testing (dummy candidates)
 
   ---@type MasterLootCandidateSelectionFrame
-  M.player_selection_frame = m.MasterLootCandidateSelectionFrame.new( m.FrameBuilder, M.config )
+  M.player_selection_frame = m.MasterLootCandidateSelectionFrame.new( m.FrameBuilder, M.config, db("looter_priority"), M.player_info )
 
   local rolling_popup_db = db( "rolling_popup" )
 
