@@ -105,7 +105,8 @@ function M.new( config )
         player_name = roll.player_name,
         player_class = roll.player_class,
         roll = roll.roll,
-        padding = i == 1 and top_padding or nil
+        padding = i == 1 and top_padding or nil,
+        on_click = roll.award_callback
       } )
     end
   end

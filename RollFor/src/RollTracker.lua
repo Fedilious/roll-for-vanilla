@@ -111,12 +111,12 @@ function M.new( item_on_roll )
     end )
   end
 
-  local function add( player_name, player_class, roll_type, roll )
+  local function add( player_name, player_class, roll_type, roll, award_callback )
     if current_iteration == 0 then return end
     M.debug.add( "add" )
 
     ---@type RollData
-    local data = { player_name = player_name, player_class = player_class, roll_type = roll_type, roll = roll }
+    local data = { player_name = player_name, player_class = player_class, roll_type = roll_type, roll = roll, award_callback = award_callback }
     local iteration = iterations[ current_iteration ]
 
     if roll and (iteration.rolling_strategy == RS.SoftResRoll or iteration.rolling_strategy == RS.TieRoll) then

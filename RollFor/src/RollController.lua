@@ -830,10 +830,16 @@ function M.new(
   local function on_roll( player_name, player_class, roll_type, roll )
     M.debug.add( string.format( "on_roll( %s, %s, %s, %s )", player_name, player_class, roll_type, roll ) )
     local roll_tracker = get_roll_tracker( currently_displayed_item and currently_displayed_item.id )
-    roll_tracker.add( player_name, player_class, roll_type, roll )
-
     local data, current_iteration = roll_tracker.get()
     local strategy_type = current_iteration and current_iteration.rolling_strategy
+
+    local slot = data.item and loot_list.get_slot( data.item.id )
+    local candidate = slot and ml_candidates.find( slot, player_name )
+    local award_callback = candidate and function ()
+      show_master_loot_confirmation( candidate, data.item, strategy_type )
+    end
+
+    roll_tracker.add( player_name, player_class, roll_type, roll, award_callback )
 
     if strategy_type == "NormalRoll" or strategy_type == "SoftResRoll" then
       local waiting_for_rolls = data.status.type == "Waiting" or false
