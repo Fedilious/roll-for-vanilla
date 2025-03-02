@@ -455,7 +455,7 @@ local function on_roll_command( roll_slash_command )
       return
     end
 
-    if M.softres.is_item_hardressed( item.id ) then
+    if M.softres.is_item_hardressed( item.id ) and roll_slash_command ~= RollSlashCommand.NoSoftResRoll then
       M.roll_controller.preview( item, count )
       return
     end
