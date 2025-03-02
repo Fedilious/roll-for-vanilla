@@ -26,7 +26,7 @@ function M.new( config, roll_tracker, loot_list, roll_controller, player_info )
   -- local selected_loot_list_item
 
   local function process_next_item()
-    local threshold = m.api.GetLootThreshold()
+    local threshold = config.loot_threshold()
     local data = roll_tracker.get()
     local items = loot_list.get_items()
     local item_count = getn( items )

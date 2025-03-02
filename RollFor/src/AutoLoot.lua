@@ -62,7 +62,7 @@ function M.new( loot_list, api, db, config, player_info )
 
     local zone_name = api().GetRealZoneText()
     local item_ids = items[ zone_name ] or {}
-    local threshold = api().GetLootThreshold()
+    local threshold = config.loot_threshold()
     local quality = item.quality or 0
 
     if item_ids[ item.id ] then

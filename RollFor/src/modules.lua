@@ -584,6 +584,22 @@ function M.roll_type_abbrev( roll_type )
   end
 end
 
+function M.quality_str( quality )
+  local description = quality
+
+  if quality >= 0 and quality <= 6 then
+    description = M.api["ITEM_QUALITY" .. quality .. "_DESC"] or quality
+  end
+
+  local color = M.api.ITEM_QUALITY_COLORS[ quality ] or nil
+
+  if color then
+    return string.format( "%s%s|r", color.hex, description )
+  else
+    return hl(str)
+  end
+end
+
 function M.possesive_case( player_name )
   local last_letter = string.sub( player_name, -1 )
   return last_letter == "s" and "'" or "'s"

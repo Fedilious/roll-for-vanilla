@@ -532,6 +532,12 @@ local function on_roll( player_name, roll, min, max )
   M.rolling_logic.on_roll( player, roll, min, max )
 end
 
+local function on_loot_threshold_changed()
+  if m.is_player_master_looter() then
+    M.ace_timer.ScheduleTimer( M, M.config.print_loot_threshold, 0.1 )
+  end
+end
+
 local function on_loot_method_changed()
   M.master_loot_warning.on_party_loot_method_changed()
 end
@@ -539,6 +545,7 @@ end
 local function on_master_looter_changed( player_name )
   if M.player_info.get_name() == player_name and m.is_master_loot() then
     M.ace_timer.ScheduleTimer( M, M.config.print_raid_roll_settings, 0.1 )
+    M.ace_timer.ScheduleTimer( M, M.config.print_loot_threshold, 0.2 )
   end
 end
 
@@ -555,6 +562,11 @@ function M.on_chat_msg_system( message )
 
   for player_name in string.gmatch( message, "(.-) is now the loot master%." ) do
     on_master_looter_changed( player_name )
+    return
+  end
+
+  if string.find( message, "^Loot threshold set to" ) then
+    on_loot_threshold_changed()
     return
   end
 end
