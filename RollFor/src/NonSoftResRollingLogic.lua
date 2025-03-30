@@ -216,7 +216,7 @@ function M.new(
     local tmog_info = config.tmog_rolling_enabled() and string.format( " or /roll %s (TMOG)", config.tmog_roll_threshold() ) or ""
     local default_ms = config.ms_roll_threshold() ~= 100 and string.format( "%s ", config.ms_roll_threshold() ) or ""
     local roll_info = string.format( " /roll %s(MS) or /roll %s (OS)%s", default_ms, config.os_roll_threshold(), tmog_info )
-    local info_or_note = (info and info ~= "") or item_notes.get_note_non_softres( item )
+    local info_or_note = (info ~= "" and info) or item_notes.get_note_non_softres( item )
     local info_str = info_or_note and info_or_note ~= "" and string.format( " %s", info_or_note ) or roll_info
     local x_rolls_win = item_count > 1 and string.format( ". %d top rolls win.", item_count ) or ""
 

@@ -149,8 +149,12 @@ function M.new( popup_builder, config, rolling_popup )
       end
     end
 
+    if global_trade_message then
+      table.insert( content, { type = "text", value = string.format("Trade item to %s", global_trade_message), padding = 7 } )
+    end
+
     table.insert( content, { type = "button", label = "Yes", width = 80, on_click = data.confirm_fn } )
-    table.insert( content, { type = "button", label = "Set as TRADE rx", width = 160, on_click = function()
+    table.insert( content, { type = "button", label = "As Trade Receiver", width = 80, on_click = function()
       global_trade_message = name
       info( string.format( "Trade %s the item.", hl( name ) ) )
       on_hide = nil

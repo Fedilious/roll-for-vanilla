@@ -101,8 +101,20 @@ function M.new( api, db )
   end
 
   local function on_command( args )
-    local zone_name = api.GetRealZoneText()
+    if args == "" then
+      args = nil
+    end
+
+    local zone_name = args or api.GetRealZoneText()
     local item_ids = db.items[ zone_name ] or {}
+
+    if getn( item_ids ) == 0 then
+      info( string.format( "No notes found for zone %s", hl( zone_name ) ) )
+      info( string.format( "Use /rfnotes %s to select a zone. The following zones have items: ", hl("zone") ) )
+      for zone_name, _ in pairs( db.items ) do
+        info( grey( zone_name ) )
+      end
+    end
 
     for item_id, notes in pairs( item_ids ) do
       local item_link = m.fetch_item_link_and_quality( item_id ) or grey( string.format( "Unknown item %s", item_id ) )
