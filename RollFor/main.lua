@@ -463,9 +463,6 @@ local function on_roll_command( roll_slash_command )
       return
     end
 
-    info( string.format( "Rolling for %s", hl( item.link ) ) )
-    info( string.format( "Rolling for [MSG] %s [SAEC] %s", hl(message), seconds ) )
-
     M.roll_controller.start( strategy_type, item, count, seconds, message )
   end
 end

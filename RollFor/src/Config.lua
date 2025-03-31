@@ -48,7 +48,7 @@ function M.new( db, event_bus )
   local function init()
     if not db.ms_roll_threshold then db.ms_roll_threshold = 100 end
     if not db.os_roll_threshold then db.os_roll_threshold = 99 end
-    if not db.tmog_roll_threshold then db.tmog_roll_threshold = 98 end
+    if not db.tmog_roll_threshold then db.tmog_roll_threshold = 50 end
     if not db.superwow_auto_loot_coins then db.superwow_auto_loot_coins = true end
     if db.tmog_rolling_enabled == nil then db.tmog_rolling_enabled = true end
     if db.show_ml_warning == nil then db.show_ml_warning = false end
@@ -56,7 +56,8 @@ function M.new( db, event_bus )
     if db.master_loot_frame_rows == nil then db.master_loot_frame_rows = 5 end
     if db.auto_master_loot == nil then db.auto_master_loot = true end
     if db.auto_loot == nil then db.auto_loot = true end
-    if db.auto_loot_announce == nil then db.auto_loot_announce = true end
+    if db.auto_loot_announce == nil then db.auto_loot_announce = false end
+    if db.auto_class_announce == nil then db.auto_class_announce = true end
   end
 
   local function print( toggle_key )
