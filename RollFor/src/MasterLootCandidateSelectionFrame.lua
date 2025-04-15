@@ -109,6 +109,14 @@ local function create_button( parent, index, rows )
   icon:Hide()
   frame.icon = icon
 
+  local icon2 = frame:CreateTexture( nil, "ARTWORK" )
+  icon2:SetPoint( "LEFT", text, "RIGHT", 2, 0 )
+  icon2:SetWidth( 13 )
+  icon2:SetHeight( 12 )
+  icon2:SetTexture( string.format( "Interface\\AddOns\\RollFor\\assets\\crown.tga" ) )
+  icon2:Hide()
+  frame.icon2 = icon2
+
   frame:SetScript( "OnEnter", function( self )
     if m.vanilla then self = this end
 
@@ -151,11 +159,19 @@ local function create_button( parent, index, rows )
   frame.unmark_winner = function()
     frame.text:SetPoint( "CENTER", frame, "CENTER" )
     frame.icon:Hide()
+    frame.icon2:Hide()
   end
 
   frame.mark_winner = function()
     frame.text:SetPoint( "CENTER", frame, "CENTER", 2 - icon_width / 2, 0 )
     frame.icon:Show()
+    frame.icon2:Hide()
+  end
+
+  frame.mark_priority = function()
+    frame.text:SetPoint( "CENTER", frame, "CENTER", 2 - icon_width / 2, 0 )
+    frame.icon:Hide()
+    frame.icon2:Show()
   end
 
   return frame
@@ -208,7 +224,7 @@ function M.new( frame_builder, config, db, player_info )
       button.player = candidate
 
       if candidate.priority then
-        button.text:SetTextColor( 1, 0.25, 0.1 )
+        button.text:SetTextColor( 1, 0.84, 0 )
         dim( button )
       elseif color then
         button.text:SetTextColor( color.r, color.g, color.b )
@@ -219,8 +235,10 @@ function M.new( frame_builder, config, db, player_info )
 
       button:SetScript( "OnClick", candidate.confirm_fn )
 
-      if candidate.is_winner or candidate.priority then
+      if candidate.is_winner then
         button.mark_winner()
+      elseif candidate.priority then
+        button.mark_priority()
       else
         button.unmark_winner()
       end
