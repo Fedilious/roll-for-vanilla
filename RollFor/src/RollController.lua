@@ -205,6 +205,17 @@ function M.new(
       table.insert( buttons, button( "FinishEarly", function() finish_rolling_early() end ) )
     end
 
+    local roll_tracker = get_roll_tracker( currently_displayed_item and currently_displayed_item.id )
+    local function tick_callback()
+      return function()
+        notify_subscribers( "set_timer", 4 )
+      end
+    end
+    local rt = roll_tracker.get()
+    if rt.status and rt.status.type == m.Types.RollingStatus.InProgress and rt.status.seconds_left >= 5 then
+      table.insert( buttons, button( "SpeedUp", tick_callback() ) )
+    end
+
     table.insert( buttons, button( "Cancel", function() cancel_rolling() end ) )
 
     return buttons

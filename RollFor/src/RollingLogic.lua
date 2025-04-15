@@ -227,6 +227,16 @@ function M.new( chat, ace_timer, roll_controller, strategy_factory, master_loot_
     roll_controller.rolling_canceled()
   end
 
+  local function set_timer(t)
+    if not m_rolling_strategy then return end
+    if m_rolling_strategy.set_timer ~= nil then
+      m_rolling_strategy.set_timer( t )
+    end
+    if m_rolling_strategy.fset_timer ~= nil then
+      m_rolling_strategy.fset_timer( t )
+    end
+  end
+
   ---@param player Player
   ---@param roll_value number
   ---@param min number
@@ -286,6 +296,7 @@ function M.new( chat, ace_timer, roll_controller, strategy_factory, master_loot_
     roll( strategy, data.item, data.item_count, data.seconds, data.message, rolling_players )
   end
 
+  roll_controller.subscribe( "set_timer", set_timer )
   roll_controller.subscribe( "finish_rolling_early", finish_rolling_early )
   roll_controller.subscribe( "cancel_rolling", cancel_rolling )
   roll_controller.subscribe( "start", start )

@@ -206,6 +206,10 @@ function M.new(
     controller.tick( seconds_left )
   end
 
+  local function force_set_timer( seconds )
+    seconds_left = seconds
+  end
+
   local function accept_rolls()
     rolling = true
     timer = ace_timer.ScheduleRepeatingTimer( M, on_timer, 1.7 )
@@ -281,6 +285,7 @@ function M.new(
     stop_accepting_rolls = stop_accepting_rolls,
     cancel_rolling = cancel_rolling,
     is_rolling = is_rolling,
+    set_timer = force_set_timer,
     get_type = function() return m.Types.RollingStrategy.NormalRoll end
   }
 end

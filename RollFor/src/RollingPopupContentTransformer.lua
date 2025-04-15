@@ -26,6 +26,7 @@ M.button_definitions = {
   [ "Cancel" ] = button_definition( "Cancel", 80 ),
   [ "Close" ] = button_definition( "Close", 70 ),
   [ "FinishEarly" ] = button_definition( "Finish early", 110 ),
+  [ "SpeedUp" ] = button_definition( "Speed up", 100 ),
   [ "InstaRaidRoll" ] = button_definition( "Raid roll", 90 ),
   [ "RaidRoll" ] = button_definition( "Raid roll", 90 ),
   [ "RaidRollAgain" ] = button_definition( "Raid roll again", 130 ),

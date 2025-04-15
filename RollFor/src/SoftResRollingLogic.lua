@@ -293,6 +293,10 @@ function M.new(
     return rolling
   end
 
+  local function force_set_timer( t )
+    seconds_left = t
+  end
+
   ---@type RollingStrategy
   return {
     start_rolling = start_rolling,
@@ -301,6 +305,7 @@ function M.new(
     stop_accepting_rolls = stop_accepting_rolls,
     cancel_rolling = cancel_rolling,
     is_rolling = is_rolling,
+    set_timer = force_set_timer,
     get_type = function() return strategy end
   }
 end
