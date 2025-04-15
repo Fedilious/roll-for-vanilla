@@ -280,6 +280,19 @@ function M.button( parent )
   return button
 end
 
+function M.secondary_button( parent )
+  local template = m.vanilla and "StaticPopupButtonTemplate" or "UIPanelButtonTemplate"
+  local height = m.vanilla and 20 or 21
+
+  local button = m.api.CreateFrame( "Button", nil, parent, template )
+  button:SetWidth( 100 )
+  button:SetHeight( height )
+  button:SetText( "" )
+  button:GetFontString():SetPoint( "CENTER", 0, -1 )
+
+  return button
+end
+
 function M.award_button( parent )
   local template = m.vanilla and "StaticPopupButtonTemplate" or "UIPanelButtonTemplate"
   local height = m.vanilla and 20 or 21

@@ -29,7 +29,8 @@ M.button_definitions = {
   [ "InstaRaidRoll" ] = button_definition( "Raid roll", 90 ),
   [ "RaidRoll" ] = button_definition( "Raid roll", 90 ),
   [ "RaidRollAgain" ] = button_definition( "Raid roll again", 130 ),
-  [ "Roll" ] = button_definition( "Roll", 60 )
+  [ "Roll" ] = button_definition( "Roll", 60 ),
+  [ "AwardPriority" ] = { type = "secondary_button", label = "Award to someone", width = 50 },
 }
 
 local top_padding = 11
@@ -50,7 +51,7 @@ local top_padding = 11
 
 ---@param config Config
 ---@diagnostic disable-next-line: unused-local
-function M.new( config, item_notes )
+function M.new( config, item_notes, player_selection_frame, player_info )
   ---@param on_click fun()
   local function award_winner_button( on_click )
     return { type = "award_button", label = "Award", width = 90, on_click = on_click, padding = 6 }
@@ -184,8 +185,8 @@ function M.new( config, item_notes )
       if not button.should_display_callback or button.should_display_callback() then
         table.insert( content, {
           type = definition.type,
-          label = definition.label,
-          width = definition.width,
+          label = button.label or definition.label,
+          width = button.width or definition.width,
           on_click = button.callback
         } )
       end

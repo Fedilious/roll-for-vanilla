@@ -154,7 +154,7 @@ function M.new( popup_builder, config, rolling_popup )
     end
 
     table.insert( content, { type = "button", label = "Yes", width = 80, on_click = data.confirm_fn } )
-    table.insert( content, { type = "button", label = "As Trade Receiver", width = 80, on_click = function()
+    table.insert( content, { type = "button", label = "Announce Trade", width = 80, on_click = function()
       global_trade_message = name
       info( string.format( "Trade %s the item.", hl( name ) ) )
       on_hide = nil

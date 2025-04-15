@@ -208,6 +208,19 @@ function M.new( popup_builder, content_transformer, db, config )
           else
             frame:Enable()
           end
+        elseif type == "secondary_button" then
+          frame:SetWidth( v.width or button_defaults.width )
+          frame:SetHeight( v.height or button_defaults.height )
+          frame:SetText( v.label or "" )
+          frame:SetScale( v.scale or button_defaults.scale )
+          frame:ClearAllPoints()
+          frame:SetScript( "OnClick", v.on_click or function() end )
+
+          if v.disabled then
+            frame:Disable()
+          else
+            frame:Enable()
+          end
         elseif type == "info" then
           frame.tooltip_info = v.value
           frame:ClearAllPoints()
@@ -216,7 +229,7 @@ function M.new( popup_builder, content_transformer, db, config )
           frame:SetHeight( v.height or 4 )
         end
 
-        if type ~= "button" then
+        if type ~= "button" and type ~= "secondary_button" then
           local count = getn( lines )
 
           if count == 0 then

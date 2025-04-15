@@ -207,8 +207,10 @@ local function create_components()
   ---@type MasterLootCandidates
   M.master_loot_candidates = m.MasterLootCandidates.new( M.api(), M.group_roster, M.raw_loot_list ) -- remove group_roster for testing (dummy candidates)
 
+  local looter_priority_db = db( "looter_priority" )
+
   ---@type MasterLootCandidateSelectionFrame
-  M.player_selection_frame = m.MasterLootCandidateSelectionFrame.new( m.FrameBuilder, M.config, db("looter_priority"), M.player_info )
+  M.player_selection_frame = m.MasterLootCandidateSelectionFrame.new( m.FrameBuilder, M.config, looter_priority_db, M.player_info )
 
   local rolling_popup_db = db( "rolling_popup" )
 
@@ -248,7 +250,8 @@ local function create_components()
     M.config,
     M.rolling_popup,
     M.loot_award_popup,
-    M.player_selection_frame
+    M.player_selection_frame,
+    M.player_info
   )
 
   ---@type LootAwardCallback

@@ -198,6 +198,16 @@ function M.new( frame_builder, config, db, player_info )
     m_frame:SetHeight( (button_height + vertical_padding) * total_rows + vertical_padding + vertical_margin * 2 )
   end
 
+  local function is_priority( name )
+    for _, player_name in ipairs( db.player_names ) do
+      if name == player_name then
+        return true
+      end
+    end
+
+    return false
+  end
+
   ---@param candidates MasterLootCandidate[]
   local function create_candidate_frames( candidates )
     local total = getn( candidates )
@@ -339,6 +349,7 @@ function M.new( frame_builder, config, db, player_info )
   return {
     show = show,
     hide = hide,
+    is_priority = is_priority,
     get_frame = function() return m_frame end
   }
 end

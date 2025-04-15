@@ -89,6 +89,10 @@ function M.new( api, db )
         str = str .. hl( "(MS/OS) " )
       end
 
+      if not note.hardres and not note.softres and not note.normal then
+        str = str .. hl( "Internal Note: " )
+      end
+
       str = str .. note.note
     end
 

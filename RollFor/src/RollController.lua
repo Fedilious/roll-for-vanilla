@@ -58,6 +58,7 @@ local hl = m.colors.hl
 ---@param rolling_popup RollingPopup
 ---@param loot_award_popup LootAwardPopup
 ---@param player_selection_frame MasterLootCandidateSelectionFrame
+---@param player_info PlayerInfo
 function M.new(
     ml_candidates,
     softres,
@@ -65,7 +66,8 @@ function M.new(
     config,
     rolling_popup,
     loot_award_popup,
-    player_selection_frame
+    player_selection_frame,
+    player_info
 )
   local roll_trackers = {} ---@type table<ItemId, RollTracker>
   local callbacks = {}
@@ -373,6 +375,46 @@ function M.new(
       end, should_display_callback ) )
   end
 
+  local function add_award_priority_buttons( buttons, candidates, dropped_item, strategy_type )
+    M.debug.add( "add_award_priority_buttons" )
+
+    local function force_award(candidate) -- Bypass lua weirdness
+      return function()
+        player_selection_frame.hide()
+        if dropped_item and dropped_item.bind == "BindOnPickup" then --TODO use enum
+          show_master_loot_confirmation( candidate, dropped_item, strategy_type )
+        else
+          award_confirmed( candidate, dropped_item )
+        end
+      end
+    end
+
+    table.insert(buttons, {
+      type = "AwardPriority",
+      label = string.format("Award to %s", m.colorize_player_by_class("me", player_info.get_class())),
+      width = 70,
+      callback = function()
+        for _, candidate in ipairs( candidates ) do
+          if candidate.name == player_info.get_name() then
+            force_award(candidate)()
+            break
+          end
+        end
+      end,
+    });
+
+    for _, candidate in ipairs( candidates ) do
+      if player_selection_frame.is_priority(candidate.name) then
+        table.insert(buttons, {
+          type = "AwardPriority",
+          label = string.format("Award to %s", m.colorize_player_by_class(candidate.name, candidate.class)),
+          width = 120,
+          callback = force_award(candidate),
+        });
+      end
+    end
+  end
+
   ---@param buttons RollingPopupButtonWithCallback[]
   ---@param strategy RollingStrategyType
   ---@param item Item
@@ -413,6 +455,8 @@ function M.new(
 
     add_close_button( buttons, S.Preview )
 
+    add_award_priority_buttons( buttons, candidates, dropped_item, RS.NormalRoll )
+
     rolling_popup_data[ item.id ] = {
       item_link = item.link,
       item_tooltip_link = IU.get_tooltip_link( item.link ),
@@ -442,6 +486,8 @@ function M.new(
     if candidate_count > 0 then add_award_other_button( dropped_item, buttons, candidates, {}, RS.SoftResRoll ) end
 
     add_close_button( buttons, S.Preview )
+
+    add_award_priority_buttons( buttons, candidates, dropped_item, RS.SoftResRoll )
 
     rolling_popup_data[ item.id ] = {
       item_link = item.link,
@@ -600,6 +646,8 @@ function M.new(
 
     add_close_button( buttons, S.Finish )
 
+    add_award_priority_buttons( buttons, candidates, dropped_item, RS.NormalRoll )
+
     currently_displayed_item = item
 
     ---@type RollingPopupRaidRollData
@@ -654,6 +702,8 @@ function M.new(
     if candidate_count > 0 then add_award_other_button( dropped_item, buttons, candidates, winners, RS.NormalRoll ) end
 
     add_close_button( buttons, S.Finish )
+
+    add_award_priority_buttons( buttons, candidates, dropped_item, RS.NormalRoll )
 
     currently_displayed_item = item
     ---@type RollingPopupRollData
@@ -715,6 +765,7 @@ function M.new(
       add_raid_roll_button( buttons, "RaidRoll", item, data.item_count )
       add_award_other_button( dropped_item, buttons, candidates, winners, first_iteration.rolling_strategy )
       add_close_button( buttons, "Finished" )
+      add_award_priority_buttons( buttons, candidates, dropped_item, RS.NormalRoll )
     end
 
     local tie_iterations = {}

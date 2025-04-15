@@ -47,9 +47,10 @@ local function new( frame_builder, bottom_margin, bottom_button_margin, side_mar
   local function align_buttons( popup, lines )
     if not popup.buttons_frame then
       local frame = m.api.CreateFrame( "Frame", nil, popup )
-      frame:SetPoint( "BOTTOM", 0, m_bottom_button_margin )
       popup.buttons_frame = frame
     end
+
+    popup.buttons_frame:SetPoint( "BOTTOM", 0, m_bottom_button_margin )
 
     local total_width = 0
     local max_height = 0
@@ -80,6 +81,55 @@ local function new( frame_builder, bottom_margin, bottom_button_margin, side_mar
     popup.buttons_frame:SetHeight( max_height )
   end
 
+  local function align_buttons_secondary( popup, lines )
+    local total_width = 0
+    local max_height = 0
+    local last_anchor = nil
+
+    local buttons = m.filter( lines, function( line ) return line.line_type == "secondary_button" end )
+
+    if getn( buttons ) == 0 then
+      if popup.buttons_frame_secondary then
+        popup.buttons_frame_secondary:Hide()
+      end
+      return
+    end
+
+    if not popup.buttons_frame_secondary then
+      local frame = m.api.CreateFrame( "Frame", nil, popup )
+      frame:SetPoint( "BOTTOM", 0, m_bottom_button_margin )
+      popup.buttons_frame_secondary = frame
+    end
+
+    popup.buttons_frame_secondary:Show()
+
+    for _, button in ipairs( buttons ) do
+      local frame = button.frame
+      local height = frame:GetHeight()
+      local width = frame:GetWidth()
+      local scale = frame:GetScale()
+
+      if height > max_height then max_height = height end
+
+      if not last_anchor then
+        frame:SetPoint( "LEFT", popup.buttons_frame_secondary, "LEFT", 0, 0 )
+      else
+        frame:SetPoint( "LEFT", last_anchor, "RIGHT", m_button_padding, 0 )
+        total_width = total_width + (m_button_padding * scale)
+      end
+
+      total_width = total_width + (width * scale)
+      last_anchor = frame
+    end
+
+    popup.buttons_frame_secondary:SetWidth( total_width )
+    popup.buttons_frame_secondary:SetHeight( max_height )
+
+    if popup.buttons_frame then
+      popup.buttons_frame:SetPoint( "BOTTOM", popup.buttons_frame_secondary, "TOP", 0, 1 )
+    end
+  end
+
   local function get_total_width( buttons )
     local result = 0
 
@@ -96,7 +146,7 @@ local function new( frame_builder, bottom_margin, bottom_button_margin, side_mar
     local height = 0
 
     for _, line in ipairs( lines ) do
-      if line.line_type ~= "button" and line.line_type ~= "info" then
+      if line.line_type ~= "button" and line.line_type ~= "info" and line.line_type ~= "secondary_button" then
         local frame = line.frame
         local scale = frame.GetScale and frame:GetScale() or 1
         local width = frame:GetWidth() * scale
@@ -118,12 +168,23 @@ local function new( frame_builder, bottom_margin, bottom_button_margin, side_mar
       height = height + 23
     end
 
+    local secondary_buttons = m.filter( lines, function( line ) return line.line_type == "secondary_button" end )
+    local secondary_button_count = getn( secondary_buttons )
+    local secondary_button_width = get_total_width( secondary_buttons ) + (secondary_button_count - 1) * m_button_padding
+
+    if secondary_button_width > max_width then max_width = button_width end
+
+    if secondary_button_count > 0 then
+      height = height + 23
+    end
+
+    height = height + ((button_count + secondary_button_count) > 0 and m_bottom_margin or 23)
+
     popup:SetWidth( max_width + m_side_margin )
-
-
-    popup:SetHeight( height + (button_count > 0 and m_bottom_margin or 23) )
+    popup:SetHeight( height )
 
     align_buttons( popup, lines )
+    align_buttons_secondary( popup, lines )
   end
 
   local decoratee = frame_builder.new()

@@ -33,7 +33,6 @@ function M.handle_events( main )
     if not init then return end
 
     if event == "GROUP_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" then
-      main.version_broadcast.on_group_changed()
       main.on_group_changed()
       main.new_group_event.on_group_changed()
     elseif event == "CHAT_MSG_PARTY" then
