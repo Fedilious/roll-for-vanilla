@@ -412,6 +412,7 @@ function M.new(
           end
         end
       end,
+      should_display_callback = should_display_callback
     });
 
     for _, candidate in ipairs( candidates ) do
@@ -421,6 +422,7 @@ function M.new(
           label = string.format("Award to %s", m.colorize_player_by_class(candidate.name, candidate.class)),
           width = 120,
           callback = force_award(candidate),
+          should_display_callback = should_display_callback
         });
       end
     end
