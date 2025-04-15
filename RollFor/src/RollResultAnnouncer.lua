@@ -185,10 +185,10 @@ function M.new( chat, roll_controller, softres, config, item_notes )
 
     local seconds_left = data.seconds_left
 
-    if seconds_left == 3 then
-      chat.announce( "Stopping rolls in 3" )
-    elseif seconds_left < 3 then
+    if seconds_left < 3 then
       chat.announce( tostring( seconds_left ) )
+    elseif seconds_left == 3 or math.mod( seconds_left, 10 ) == 0 then
+      chat.announce( string.format( "Stopping rolls in %s", seconds_left ) )
     end
   end
 

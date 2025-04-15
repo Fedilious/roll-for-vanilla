@@ -76,6 +76,9 @@ function M.transform( data )
         if not roller then
           roller = make_roller( roller_name, 1 )
           roller.sr_plus = tonumber( item.sr_plus )
+	  if roller.sr_plus ~= nil then
+            roller.sr_plus = roller.sr_plus * 10
+	  end
           table.insert( sr_result[ item_id ].rollers, roller )
         else
           roller.rolls = roller.rolls + 1

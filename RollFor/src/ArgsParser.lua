@@ -29,7 +29,7 @@ function M.new( item_utils, config )
       local item = make_item( id, name, link, quality, texture )
       local secs = seconds and seconds ~= "" and seconds ~= " " and tonumber( seconds ) or config.default_rolling_time_seconds()
 
-      return item, count, secs < 4 and 4 or secs > 15 and 15 or secs, message
+      return item, count, secs < 4 and 4 or secs > 30 and 30 or secs, message
     end
   end
 

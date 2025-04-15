@@ -634,7 +634,7 @@ local function show_how_to_roll()
   local sr_count = getn( sr )
 
   M.chat.announce( string.format( "For main-spec%s, type: /roll%s", sr_count > 0 and " and soft-res" or "", ms ) )
-  M.chat.announce( string.format( "For off-spec, type: /roll %s", M.config.os_roll_threshold() ) )
+  M.chat.announce( string.format( "For off-spec/PVP, type: /roll %s", M.config.os_roll_threshold() ) )
 
   if M.config.tmog_rolling_enabled() then
     M.chat.announce( string.format( "For transmog, type: /roll %s", M.config.tmog_roll_threshold() ) )

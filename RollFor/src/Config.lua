@@ -161,8 +161,8 @@ function M.new( db, event_bus )
         return
       end
 
-      if v > 15 then
-        info( string.format( "Default rolling time must be at most %s seconds.", hl( "15" ) ) )
+      if v > 60 then
+        info( string.format( "Default rolling time must be at most %s seconds.", hl( "60" ) ) )
         return
       end
 
