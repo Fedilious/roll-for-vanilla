@@ -495,7 +495,8 @@ function M.new( db, event_bus )
     master_loot_frame_rows = get( "master_loot_frame_rows" ),
     configure_master_loot_frame_rows = configure_master_loot_frame_rows,
     loot_threshold = loot_threshold,
-    auto_class_announce = get( "auto_class_announce" )
+    auto_class_announce = get( "auto_class_announce" ),
+    sr_plus_multiplier = function() return 10 end, -- TODO
   }
 
   for toggle_key, _ in pairs( toggles ) do

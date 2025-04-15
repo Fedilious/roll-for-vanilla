@@ -180,7 +180,7 @@ function M.new(
   ---@param min number
   ---@param max number
   local function on_roll( roller, roll, min, max )
-    if not rolling or min ~= 1 then return end
+    if not rolling then return end
 
     local player = find_player( roller.name )
 
@@ -191,11 +191,24 @@ function M.new(
     end
 
     local ms_threshold = config.ms_roll_threshold()
-    local ms_roll = max == ms_threshold
+
+    local expected_min = 1
+    local expected_max = ms_threshold
+
+    if player.sr_plus ~= nil then
+      expected_min = expected_min + player.sr_plus * config.sr_plus_multiplier()
+      expected_max = expected_max + player.sr_plus * config.sr_plus_multiplier()
+    end
+
+    local ms_roll = max == expected_max and min == expected_min
 
     if not ms_roll then
-      chat.info( m.msg.invalid_sr_roll( player.name, player.class, item.link, "/roll", roll ) )
-      controller.roll_was_ignored( player.name, player.class, roll_type, roll, "Didn't /roll." )
+      if player.sr_plus ~= nil then
+        chat.info( m.msg.invalid_sr_roll( player.name, player.class, item.link, string.format( "roll correctly. Should use /roll %s %s", expected_min, expected_max ), roll ) )
+      else
+        chat.info( m.msg.invalid_sr_roll( player.name, player.class, item.link, "/roll correctly", roll ) )
+      end
+      controller.roll_was_ignored( player.name, player.class, roll_type, roll, "Didn't /roll correctly." )
       return
     end
 
@@ -203,10 +216,6 @@ function M.new(
       chat.info( m.msg.rolls_exhausted( player.name, player.class, roll ) )
       controller.roll_was_ignored( player.name, player.class, roll_type, roll, "Rolled too many times." )
       return
-    end
-
-    if player.sr_plus then
-      roll = roll + player.sr_plus
     end
 
     player.rolls = player.rolls - 1

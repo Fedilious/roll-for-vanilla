@@ -642,6 +642,13 @@ local function show_how_to_roll()
   if M.config.tmog_rolling_enabled() then
     M.chat.announce( string.format( "For transmog, type: /roll %s", M.config.tmog_roll_threshold() ) )
   end
+
+  if sr_count > 0 then
+    M.chat.announce( string.format( "Add +%s to your SR roll for each SR+. For example, %s for +9.",
+      M.config.sr_plus_multiplier(),
+      hl( string.format( "/roll %s %s", 1 + 9 * M.config.sr_plus_multiplier(), M.config.ms_roll_threshold() + 9 * M.config.sr_plus_multiplier() ) )
+    ) )
+  end
 end
 
 local function on_reset_dropped_loot_announce_command()
