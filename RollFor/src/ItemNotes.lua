@@ -7,6 +7,7 @@ local M = {}
 local _G = getfenv( 0 )
 
 local item_utils = m.ItemUtils
+local predefined = m.ItemNotesDB
 local info = m.pretty_print
 local hl = m.colors.hl
 local grey = m.colors.grey
@@ -14,11 +15,9 @@ local grey = m.colors.grey
 local getn = table.getn
 
 function M.new( api, db )
-  db.items = db.items or { }
-
   local function get_notes( item )
     local zone_name = api.GetRealZoneText()
-    local item_ids = db.items[ zone_name ] or {}
+    local item_ids = predefined[ zone_name ] or {}
 
     return item_ids[ item.id ] or {}
   end
@@ -106,12 +105,12 @@ function M.new( api, db )
     end
 
     local zone_name = args or api.GetRealZoneText()
-    local item_ids = db.items[ zone_name ] or {}
+    local item_ids = predefined[ zone_name ] or {}
 
     if getn( item_ids ) == 0 then
       info( string.format( "No notes found for zone %s", hl( zone_name ) ) )
       info( string.format( "Use /rfnotes %s to select a zone. The following zones have items: ", hl("zone") ) )
-      for zone_name, _ in pairs( db.items ) do
+      for zone_name, _ in pairs( predefined ) do
         info( grey( zone_name ) )
       end
     end

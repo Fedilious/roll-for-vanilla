@@ -28,7 +28,7 @@ function M.new( db, player_info, my_version )
   end
 
   local function broadcast_version( channel )
-    m.SendAddonMessage( m.api, ADDON_NAME, "VERSION::" .. my_version, channel )
+    -- m.SendAddonMessage( m.api, ADDON_NAME, "VERSION::" .. my_version, channel )
   end
 
   local function broadcast_version_to_the_guild()
@@ -50,9 +50,9 @@ function M.new( db, player_info, my_version )
   end
 
   local function notify_about_new_version( ver )
-    db.last_new_version_reminder_timestamp = m.lua.time()
-    pp( string.format( "New version (%s) is available!", m.colors.highlight( string.format( "v%s", ver ) ) ) )
-    pp( "https://github.com/obszczymucha/roll-for-vanilla/releases/download/latest/RollFor.zip" )
+    -- db.last_new_version_reminder_timestamp = m.lua.time()
+    -- pp( string.format( "New version (%s) is available!", m.colors.highlight( string.format( "v%s", ver ) ) ) )
+    -- pp( "https://github.com/obszczymucha/roll-for-vanilla/releases/download/latest/RollFor.zip" )
   end
 
   local function on_version( their_version )

@@ -52,7 +52,7 @@ function M.new( db, event_bus )
     if not db.superwow_auto_loot_coins then db.superwow_auto_loot_coins = true end
     if db.tmog_rolling_enabled == nil then db.tmog_rolling_enabled = true end
     if db.show_ml_warning == nil then db.show_ml_warning = false end
-    if db.default_rolling_time_seconds == nil then db.default_rolling_time_seconds = 8 end
+    if db.default_rolling_time_seconds == nil then db.default_rolling_time_seconds = 10 end
     if db.master_loot_frame_rows == nil then db.master_loot_frame_rows = 5 end
     if db.auto_master_loot == nil then db.auto_master_loot = true end
     if db.auto_loot == nil then db.auto_loot = true end

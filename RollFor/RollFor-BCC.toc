@@ -9,6 +9,8 @@
 libs\bcc\LibStub\LibStub.lua
 libs\bcc\Libs.xml
 
+data\ItemNotesDB.lua
+
 src\bcc\compat.lua
 src\bcc\Json.lua
 
