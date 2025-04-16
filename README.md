@@ -15,3 +15,8 @@ Note that I'm not really paying attention to testing, documentation or code styl
 - Added a button to speed up the roll (instead of abruptly cancelling it)
 - `/arf` can bypass HR items
 - TMOG rolls are now `/roll 50` by default
+
+### Roadmap
+- [ ] Implement more of sica's changes
+- [ ] Make addon compatible with TWoW launcher by default
+- [ ] Show guild and guild rank in roll list
