@@ -12,5 +12,6 @@ Note that I'm not really paying attention to testing, documentation or code styl
 - Rolling can now last up to **30s**
 - `/rf config threshold <COLOUR>` can **override the master-loot threshold**. Set to `orange` to auto-loot everything that's not BoP.
 - You can select an arbitrary target from the loot list, no need to go to `...` anymore
+- Added a button to speed up the roll (instead of abruptly cancelling it)
 - `/arf` can bypass HR items
 - TMOG rolls are now `/roll 50` by default

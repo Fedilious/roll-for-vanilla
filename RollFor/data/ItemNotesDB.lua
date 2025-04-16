@@ -5,6 +5,21 @@ if m.ItemNotesDB then return end
 
 local M = {}
 
+-- General instructions:
+--
+-- Each item is referred to by its ID. Notes are ALWAYS shown to the masterlooter and, based on the circumstance, on the roll text.
+-- Items with the "softres" flag true will be shown on items that are soft-reserved.
+-- Items with the "hardres" flag true will be shown on items that are hard-reserved.
+-- Items with the "normal" flag true will be shown on items that are neither soft nor hard-reserved, i.e. are being rolled for MS/OS/TMOG.
+-- You can combine flags to show a note on multiple cases, e.g. on normal and SR but not HR rolls.
+-- If none of the flags is set, the note is considered "internal" and will ONLY be shown to the masterlooter. This is useful for information
+-- about the item or general guidance on what is considered MS for it.
+-- An item can have more than one notes, potentially with different flags, so that you show different things based on the situation.
+-- Remember: In Lua we start counting at 1!
+--
+-- To make sure your notes are stored correctly, type /rfnotes.
+-- Notes are only shown in the corresponding zone.
+
 local function ahn_qiraj()
   return {
     [ 21321 ] = { -- Red Mount
@@ -28,19 +43,13 @@ local function ahn_qiraj()
         [ "hardres" ] = true
       }
     },
-    [ 55555 ] = { -- Ivonor, Maiden's Mallet
-      [ 1 ] = {
-        [ "note" ] = "Requires gearcheck ticket",
-        [ "hardres" ] = true
-      }
-    },
     [ 21839 ] = { -- Scepter of the False Prophet
       [ 1 ] = {
-        [ "note" ] = "Requires gearcheck ticket",
-        [ "hardres" ] = true
+        [ "note" ] = "Healer (1) > Healer with other AQ40 main hand (2) > Everyone else (3)"
       },
       [ 2 ] = {
-        [ "note" ] = "Healer (1) > Healer with other AQ40 main hand (2) > Everyone else (3)"
+        [ "note" ] = "<Murder Mittens> Rank Priority",
+        [ "normal" ] = true
       }
     },
     [ 21323 ] = { -- Green Qiraji Resonating Crystal
@@ -64,6 +73,10 @@ local function ahn_qiraj()
     [ 21608 ] = { -- Amulet of Vek'nilash
       [ 1 ] = {
         [ "note" ] = "Caster/Holy Pali (1) > Shadow Priest (2) > Spelladin (3)"
+      },
+      [ 2 ] = {
+        [ "note" ] = "<Murder Mittens> Rank Priority",
+        [ "normal" ] = true
       }
     },
     [ 21650 ] = { -- Ancient Qiraji Ripper
@@ -84,6 +97,10 @@ local function ahn_qiraj()
     [ 21586 ] = { -- Belt of Never-ending Agony
       [ 1 ] = {
         [ "note" ] = "Rogue/Feral Druid/Ench Shaman (1) > Melee DPS/ Hunters (2) > Everyone else (3)"
+      },
+      [ 2 ] = {
+        [ "note" ] = "<Murder Mittens> Rank Priority",
+        [ "normal" ] = true
       }
     },
     [ 20929 ] = { -- Carapace of the Old God
@@ -114,6 +131,10 @@ local function ahn_qiraj()
     [ 22730 ] = { -- Eyestalk Waist Cord
       [ 1 ] = {
         [ "note" ] = "Caster (1) > Shadow Priest (2)"
+      },
+      [ 2 ] = {
+        [ "note" ] = "<Murder Mittens> Rank Priority",
+        [ "normal" ] = true
       }
     },
     [ 21647 ] = { -- Fetish of the Sand Reaver
@@ -197,6 +218,10 @@ local function ahn_qiraj()
     [ 60003 ] = { -- Remnants of an Old God
       [ 1 ] = {
         [ "note" ] = "Off-race Warr/Combat Rogue (1) > Shaman tank (2)"
+      },
+      [ 2 ] = {
+        [ "note" ] = "Prioritised to Ashkin + CFW wielders by guild rank ",
+        [ "normal" ] = true
       }
     },
     [ 21601 ] = { -- Ring of Emperor Vek'lor
@@ -212,6 +237,10 @@ local function ahn_qiraj()
     [ 21891 ] = { -- Shard of the Fallen Star
       [ 1 ] = {
         [ "note" ] = "Caster/Tank Pali (1) > everyone else (2)"
+      },
+      [ 2 ] = {
+        [ "note" ] = "<Murder Mittens> Rank Priority",
+        [ "normal" ] = true
       }
     },
     [ 20931 ] = { -- Skin of the Great Sandworm
@@ -242,6 +271,13 @@ local function ahn_qiraj()
       },
       [ 2 ] = {
         [ "note" ] = "Mainly a PVP item due to disorient effect"
+      }
+    },
+    [ 55556 ] = { -- Spotted Qiraji Battle Tank 
+      [ 1 ] = {
+        [ "note" ] = "<Murder Mittens> Rank Priority",
+        [ "normal" ] = true,
+        [ "hardres" ] = true
       }
     },
     -- Nature Resistance Pieces
@@ -374,9 +410,34 @@ local function molten_core()
     },
     [ 55559 ] = { -- Molten Corehound
       [ 1 ] = {
-        [ "note" ] = "Prioritised to GUILDIES!",
+        [ "note" ] = "Guild Rank Priority",
         [ "normal" ] = true,
+        [ "hardres" ] = true
+      }
+    },
+    [ 17063 ] = { -- Band of Accuria
+      [ 1 ] = {
+        [ "note" ] = "Can only be SRed by Melee MS",
         [ "softres" ] = true
+      },
+      [ 2 ] = {
+        [ "note" ] = "Guild Rank Priority",
+        [ "normal" ] = true
+      }
+    },
+    [ 17782 ] = { -- Talisman of Binding Shard
+      [ 1 ] = {
+        [ "note" ] = "Used to be rolled off between the tanks in the raid (NA)"
+      },
+      [ 2 ] = {
+        [ "note" ] = "Guild Rank Priority",
+        [ "normal" ] = true
+      }
+    },
+    [ 17204 ] = { -- Eye of Sulfuras
+      [ 1 ] = {
+        [ "note" ] = "Guild Rank Priority",
+        [ "normal" ] = true
       }
     },
     -- Profession items
@@ -445,40 +506,43 @@ local function blackwing_lair()
         [ "normal" ] = true
       }
     },
-    [ 19395 ] = { -- Rejuvenating Gem
-      [ 1 ] = {
-        [ "note" ] = "Reserved for raiders with 3+ weeks of attendance",
-        [ "normal" ] = true,
-        [ "softres" ] = true
-      }
-    },
-    [ 19406 ] = { -- Drake Fang Talisman
-      [ 1 ] = {
-        [ "note" ] = "Reserved for raiders with 3+ weeks of attendance",
-        [ "normal" ] = true,
-        [ "softres" ] = true
-      }
-    },
-    [ 19379 ] = { -- Neltharion's Tear
-      [ 1 ] = {
-        [ "note" ] = "Reserved for raiders with 7+ weeks of attendance",
-        [ "normal" ] = true,
-        [ "softres" ] = true
-      }
-    },
     [ 55557 ] = { -- Black Drake
       [ 1 ] = {
-        [ "note" ] = "Prioritised to members of <Murder Mittens>",
+        [ "note" ] = "<Murder Mittens> Rank Priority",
         [ "normal" ] = true,
-        [ "softres" ] = true
+        [ "hardres" ] = true,
       }
     },
-    [ 19002 ] = { -- Rejuvenating Gem
+    [ 19387 ] = { -- Chromatic Boots
+      [ 1 ] = {
+        [ "note" ] = "<Murder Mittens> Rank Priority",
+        [ "normal" ] = true
+      }
+    },
+    [ 19431 ] = { -- Styleen's Impending Scarab
+      [ 1 ] = {
+        [ "note" ] = "<Murder Mittens> Rank Priority",
+        [ "normal" ] = true
+      }
+    },
+    [ 19382 ] = { -- Pure Elementium Band
+      [ 1 ] = {
+        [ "note" ] = "<Murder Mittens> Rank Priority",
+        [ "normal" ] = true
+      }
+    },
+    [ 19377 ] = { -- Prestor's Talisman of Connivery
+      [ 1 ] = {
+        [ "note" ] = "<Murder Mittens> Rank Priority",
+        [ "normal" ] = true
+      }
+    },
+    [ 19002 ] = { -- Horde Head
       [ 1 ] = {
         [ "note" ] = "Horde Head",
       }
     },
-    [ 19003 ] = { -- Rejuvenating Gem
+    [ 19003 ] = { -- Alliance Head
       [ 1 ] = {
         [ "note" ] = "Alliance Head",
       }
@@ -557,9 +621,62 @@ local function blackwing_lair()
   };
 end
 
+local function naxxramas()
+  local loot = {
+    [ 22954 ] = { -- Kiss of the spider
+      [ 1 ] = {
+        [ "note" ] = "Loot Counciled",
+        [ "hardres" ] = true
+      }
+    }
+  }
+
+  local function add_mm_rank_prio(id)
+    if loot[id] == nil then loot[id] = {} end
+    table.insert(loot[id], { [ "note" ] = "Guild Rank Priority", [ "normal" ] = true })
+  end
+
+  -- Rime Covered Mantle
+  add_mm_rank_prio(22983)
+  -- Plated Abomination Ribcage
+  add_mm_rank_prio(23000)
+  -- Leggings of Polarity
+  add_mm_rank_prio(23070)
+  -- Legplates of Carnage
+  add_mm_rank_prio(23068)
+  -- Wraith Blade
+  add_mm_rank_prio(22807)
+  -- Sapphiron Loot
+  add_mm_rank_prio(23040)
+  add_mm_rank_prio(23041)
+  add_mm_rank_prio(23043)
+  add_mm_rank_prio(23045)
+  add_mm_rank_prio(23046)
+  add_mm_rank_prio(23047)
+  add_mm_rank_prio(23048)
+  add_mm_rank_prio(23049)
+  add_mm_rank_prio(23050)
+  add_mm_rank_prio(23242)
+  -- Kel'Thuzad Loot
+  add_mm_rank_prio(22798)
+  add_mm_rank_prio(22799)
+  add_mm_rank_prio(22802)
+  add_mm_rank_prio(22812)
+  add_mm_rank_prio(22819)
+  add_mm_rank_prio(22821)
+  add_mm_rank_prio(23053)
+  add_mm_rank_prio(23054)
+  add_mm_rank_prio(23056)
+  add_mm_rank_prio(23057)
+  add_mm_rank_prio(23577)
+
+  return loot
+end
+
 M[ "Ahn'Qiraj" ] = ahn_qiraj()
 M[ "Blackwing Lair" ] = blackwing_lair()
 M[ "Molten Core" ] = molten_core()
+M[ "Naxxramas" ] = naxxramas()
 
 m.ItemNotesDB = M
 return M;
