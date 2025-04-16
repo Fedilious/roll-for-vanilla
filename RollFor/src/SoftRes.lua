@@ -123,7 +123,16 @@ function M.new( db )
   local function sort_players()
     for _, item in pairs( softres_data ) do
       if item.rollers then
-        table.sort( item.rollers, function( left, right ) return left.name < right.name end )
+        table.sort( item.rollers, function( left, right )
+          if left.sr_plus and right.sr_plus then
+            return left.sr_plus > right.sr_plus
+          end
+      
+          if left.sr_plus then return true end
+          if right.sr_plus then return false end
+      
+          return left.name < right.name
+        end )
       end
     end
   end

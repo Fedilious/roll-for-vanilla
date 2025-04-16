@@ -1,0 +1,72 @@
+{
+    "metadata": {
+        "id": "QE5WXH",
+        "instance": 96,
+        "instances": [
+            "The Stockade"
+        ],
+        "origin": "raidres"
+    },
+    "softreserves": [
+        {
+            "name": "Fedilia",
+            "items": [
+                {
+                    "id": 80721,
+                    "quality": 4,
+                    "sr_plus": 7
+                },
+                {
+                    "id": 80722,
+                    "quality": 4,
+                    "sr_plus": 7
+                }
+            ]
+        },
+        {
+            "name": "Febilious",
+            "items": [
+                {
+                    "id": 80721,
+                    "quality": 4,
+                    "sr_plus": 0
+                },
+                {
+                    "id": 80722,
+                    "quality": 4,
+                    "sr_plus": 0
+                }
+            ]
+        }
+    ],
+    "hardreserves": [
+        {
+            "id": 23549,
+            "quality": 4
+        },
+        {
+            "id": 22954,
+            "quality": 4
+        },
+        {
+            "id": 23548,
+            "quality": 4
+        },
+        {
+            "id": 36666,
+            "quality": 4
+        },
+        {
+            "id": 23545,
+            "quality": 4
+        },
+        {
+            "id": 23547,
+            "quality": 4
+        },
+        {
+            "id": 22726,
+            "quality": 5
+        }
+    ]
+}

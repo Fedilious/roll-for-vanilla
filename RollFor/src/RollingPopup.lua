@@ -166,6 +166,14 @@ function M.new( popup_builder, content_transformer, db, config )
           frame:SetText( v.value )
         elseif type == "roll" then
           frame.roll_type:SetText( m.roll_type_color( v.roll_type, m.roll_type_abbrev( v.roll_type ) ) )
+
+          if v.roll_type == m.Types.RollType.SoftRes and v.sr_plus ~= nil and v.sr_plus > 0 then
+            frame.sr_plus:SetText( m.colors.highlight( string.format("+%s", v.sr_plus) ) )
+            frame.sr_plus:Show()
+          else
+            frame.sr_plus:Hide()
+          end
+
           frame.player_name:SetText( c( v.player_name, v.player_class ) )
 
           if v.roll then

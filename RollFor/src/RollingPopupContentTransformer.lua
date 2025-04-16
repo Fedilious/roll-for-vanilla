@@ -118,7 +118,8 @@ function M.new( config, item_notes, player_selection_frame, player_info )
         player_class = roll.player_class,
         roll = roll.roll,
         padding = i == 1 and top_padding or nil,
-        on_click = roll.award_callback
+        on_click = roll.award_callback,
+        sr_plus = roll.sr_plus,
       } )
     end
   end

@@ -220,7 +220,7 @@ function M.new(
 
     player.rolls = player.rolls - 1
     table.insert( rolls, make_roll( player, roll_type, roll ) )
-    controller.roll_was_accepted( player.name, player.class, roll_type, roll )
+    controller.roll_was_accepted( player.name, player.class, roll_type, roll, player.sr_plus )
 
     find_winner( State.AfterRoll )
   end

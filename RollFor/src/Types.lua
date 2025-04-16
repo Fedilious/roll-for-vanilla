@@ -159,6 +159,7 @@ end
 ---@class Roller
 ---@field name string
 ---@field rolls number
+---@field sr_plus number?
 ---@field type "Roller"
 
 ---@alias MakeRollerFn fun(
