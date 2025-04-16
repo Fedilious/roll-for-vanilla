@@ -900,7 +900,7 @@ function M.new(
   end
 
   local function on_roll( player_name, player_class, roll_type, roll, sr_plus )
-    M.debug.add( string.format( "on_roll( %s, %s, %s, %s, %s )", player_name, player_class, roll_type, roll, sr_plus ) )
+    M.debug.add( string.format( "on_roll( %s, %s, %s, %s, %s )", player_name, player_class, roll_type, roll, sr_plus or "nil" ) )
     local roll_tracker = get_roll_tracker( currently_displayed_item and currently_displayed_item.id )
     local data, current_iteration = roll_tracker.get()
     local strategy_type = current_iteration and current_iteration.rolling_strategy
