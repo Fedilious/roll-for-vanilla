@@ -1,7 +1,13 @@
 RollFor = RollFor or {}
 local m = RollFor
 
-if m.ItemNotesDB then return end
+if not m.ItemNotesDB then
+  m.ItemNotesDB = {}
+end
+
+local NOTES_NAME = "MurderMittens";
+
+if m.ItemNotesDB[ NOTES_NAME ] then return end
 
 local M = {}
 
@@ -678,5 +684,5 @@ M[ "Blackwing Lair" ] = blackwing_lair()
 M[ "Molten Core" ] = molten_core()
 M[ "Naxxramas" ] = naxxramas()
 
-m.ItemNotesDB = M
+m.ItemNotesDB[ NOTES_NAME ] = M
 return M;

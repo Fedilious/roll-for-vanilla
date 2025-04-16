@@ -153,6 +153,7 @@ function M.new( loot_list, api, db, config, player_info )
     local item_id = item_utils.get_item_id( item_link )
 
     if not item_id then
+      info( string.format( "Invalid item link." ), "auto-loot" )
       show_usage()
       return
     end
@@ -168,13 +169,14 @@ function M.new( loot_list, api, db, config, player_info )
       item_link = item_link
     }
 
-    info( string.format( "%s added.", item_link ), "auto-loot" )
+    info( string.format( "%s added for zone %s.", item_link, hl( zone_name ) ), "auto-loot" )
   end
 
   local function remove( item_link )
     local item_id = item_utils.get_item_id( item_link )
 
     if not item_id then
+      info( string.format( "Invalid item link." ), "auto-loot" )
       show_usage()
       return
     end
@@ -186,7 +188,7 @@ function M.new( loot_list, api, db, config, player_info )
     end
 
     items[ zone_name ][ item_id ] = nil
-    info( string.format( "%s removed.", item_link ), "auto-loot" )
+    info( string.format( "%s removed for zone %s.", item_link, hl( zone_name ) ), "auto-loot" )
   end
 
   local function clear()

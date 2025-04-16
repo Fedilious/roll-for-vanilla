@@ -58,6 +58,8 @@ function M.new( db, event_bus )
     if db.auto_loot == nil then db.auto_loot = true end
     if db.auto_loot_announce == nil then db.auto_loot_announce = false end
     if db.auto_class_announce == nil then db.auto_class_announce = true end
+    if db.sr_plus_multiplier == nil then db.sr_plus_multiplier = 10 end
+    if db.item_notes_source == nil then db.item_notes_source = "MurderMittens" end
   end
 
   local function print( toggle_key )
@@ -83,6 +85,15 @@ function M.new( db, event_bus )
         event_bus.notify( "config_change_requires_ui_reload", { key = toggle_key } )
       end
     end
+  end
+
+  local function get_possible_item_notes_sources()
+    local sources = { "none" }
+    for key, _ in pairs( m.ItemNotesDB ) do
+      table.insert( sources, key )
+    end
+
+    return sources
   end
 
   local function reset_rolling_popup()
@@ -115,8 +126,22 @@ function M.new( db, event_bus )
     info( string.format( "Default rolling time: %s seconds", hl( db.default_rolling_time_seconds ) ) )
   end
 
+  local function print_sr_plus_multiplier()
+    info( string.format( "SR+ Multiplier: x%s", hl( db.sr_plus_multiplier ) ) )
+  end
+
   local function print_master_loot_frame_rows()
     info( string.format( "Master loot frame rows: %s", hl( db.master_loot_frame_rows ) ) )
+  end
+
+  local function print_item_notes_source()
+    local notes_len = 0
+
+    if m.ItemNotesDB[ db.item_notes_source ] then
+      notes_len = m.count_elements( m.ItemNotesDB[ db.item_notes_source ] )
+    end
+
+    info( string.format( "Item Notes Source: %s (with %s zones)", hl( db.item_notes_source ), grey( notes_len ) ) )
   end
 
   local function print_threshold_override()
@@ -133,9 +158,11 @@ function M.new( db, event_bus )
   local function print_settings()
     print_header( "RollFor Configuration" )
     print_default_rolling_time()
+    print_sr_plus_multiplier()
     print_master_loot_frame_rows()
     print_roll_thresholds()
     print_transmog_rolling_setting()
+    print_item_notes_source()
     print_threshold_override()
 
     for toggle_key, setting in pairs( toggles ) do
@@ -172,6 +199,23 @@ function M.new( db, event_bus )
     end
 
     info( string.format( "Usage: %s <seconds>", hl( "/rf config default-rolling-time" ) ) )
+  end
+
+  local function configure_sr_plus_multiplier( args )
+    if args == "config sr-plus-multiplier" then
+      print_sr_plus_multiplier()
+      return
+    end
+
+    for value in string.gmatch( args, "config sr%-plus%-multiplier (%d+)" ) do
+      local v = tonumber( value )
+
+      db.sr_plus_multiplier = v
+      print_sr_plus_multiplier()
+      return
+    end
+
+    info( string.format( "Usage: %s <multiplier>", hl( "/rf config sr-plus-multiplier" ) ) )
   end
 
   local function configure_master_loot_frame_rows( args )
@@ -233,6 +277,21 @@ function M.new( db, event_bus )
     info( string.format( "Usage: %s <threshold>", hl( "/rf config tmog" ) ) )
   end
 
+  local function configure_item_notes_source( args )
+    if args == "config notes-source" then
+      print_item_notes_source()
+      return
+    end
+
+    for value in string.gmatch( args, "config notes%-source (.+)" ) do
+      db.item_notes_source = value
+      print_item_notes_source()
+      return
+    end
+
+    info( string.format( "Usage: %s <%s>", hl( "/rf config notes-source" ), hl( table.concat( get_possible_item_notes_sources(), "|" ) ) ) )
+  end
+
   local function loot_threshold()
     if db.loot_threshold_override ~= nil then
       return db.loot_threshold_override
@@ -262,7 +321,7 @@ function M.new( db, event_bus )
   end
 
   local function configure_loot_threshold_override( args )
-    quality = string.lower(string.match(args, "^config threshold (.+)") or "")
+    local quality = string.lower(string.match(args, "^config threshold (.+)") or "")
     
     if quality == "" then
       disable_loot_threshold_override()
@@ -304,8 +363,8 @@ function M.new( db, event_bus )
     m.print( string.format( "%s - toggle minimap icon", rfc( "minimap" ) ) )
     m.print( string.format( "%s - lock/unlock minimap icon", rfc( "minimap lock" ) ) )
     m.print( string.format( "%s - show default rolling time", rfc( "default-rolling-time" ) ) )
-    m.print( string.format( "%s - show master loot frame rows", rfc( "master-loot-frame-rows" ) ) )
     m.print( string.format( "%s %s - set default rolling time", rfc( "default-rolling-time" ), v( "seconds" ) ) )
+    m.print( string.format( "%s - show master loot frame rows", rfc( "master-loot-frame-rows" ) ) )
     m.print( string.format( "%s - show MS rolling threshold ", rfc( "ms" ) ) )
     m.print( string.format( "%s %s - set MS rolling threshold ", rfc( "ms" ), v( "threshold" ) ) )
     m.print( string.format( "%s - show OS rolling threshold ", rfc( "os" ) ) )
@@ -318,6 +377,12 @@ function M.new( db, event_bus )
 
     m.print( string.format( "%s - disable loot threshold override", rfc( "threshold" )))
     m.print( string.format( "%s %s - set loot threshold override", rfc( "threshold" ), v( "quality" )))
+
+    m.print( string.format( "%s - show SR+ multiplier", rfc( "sr-plus-multiplier" )))
+    m.print( string.format( "%s %s - set SR+ multiplier", rfc( "sr-plus-multiplier" ), v( "multiplier" )))
+
+    m.print( string.format( "%s - show item notes source", rfc( "notes-source" )))
+    m.print( string.format( "%s %s - set item notes source", rfc( "notes-source" ), v( table.concat( get_possible_item_notes_sources(), "|" ) )))
 
     for _, setting in pairs( toggles ) do
       if not setting.hidden then
@@ -424,6 +489,16 @@ function M.new( db, event_bus )
       return
     end
 
+    if string.find( args, "^config sr%-plus%-multiplier" ) then
+      configure_sr_plus_multiplier( args )
+      return
+    end
+
+    if string.find( args, "^config notes%-source" ) then
+      configure_item_notes_source( args )
+      return
+    end
+
     if string.find( args, "^config threshold") then
       configure_loot_threshold_override( args )
       return
@@ -496,7 +571,8 @@ function M.new( db, event_bus )
     configure_master_loot_frame_rows = configure_master_loot_frame_rows,
     loot_threshold = loot_threshold,
     auto_class_announce = get( "auto_class_announce" ),
-    sr_plus_multiplier = function() return 10 end, -- TODO
+    sr_plus_multiplier = get( "sr_plus_multiplier" ),
+    item_notes_source = get( "item_notes_source" ),
   }
 
   for toggle_key, _ in pairs( toggles ) do

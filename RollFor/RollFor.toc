@@ -9,7 +9,8 @@
 libs\vanilla\LibStub\LibStub.lua
 libs\vanilla\Libs.xml
 
-data\ItemNotesDB.lua
+itemnotes\MurderMittens.lua
+itemnotes\User.lua
 
 src\vanilla\backport.lua
 src\vanilla\compat.lua

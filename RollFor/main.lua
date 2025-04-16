@@ -116,7 +116,7 @@ local function create_components()
   ---@type TooltipReader
   M.tooltip_reader = m.TooltipReader.new( M.api() )
 
-  M.item_notes = m.ItemNotes.new ( M.api(), db( "item_notes" ) )
+  M.item_notes = m.ItemNotes.new ( M.api(), db( "item_notes" ), M.config )
 
   -- TODO: Add type.
   M.version_broadcast = m.VersionBroadcast.new( db( "version_broadcast" ), M.player_info, version.str )
