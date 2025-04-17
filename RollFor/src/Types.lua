@@ -82,6 +82,23 @@ local RollingStrategy = {
 ---@type RS
 M.RollingStrategy = RollingStrategy
 
+---@alias SrPlusStrategy
+---| "PlayerAddsRoll"
+---| "AddonHandlesPlus"
+---| "Ignore"
+
+---@class SRPS
+---@field PlayerAddsRoll "PlayerAddsRoll"
+---@field AddonHandlesPlus "AddonHandlesPlus"
+---@field Ignore "Ignore"
+
+---@type SRPS
+M.SrPlusStrategy = {
+  PlayerAddsRoll = "PlayerAddsRoll",
+  AddonHandlesPlus = "AddonHandlesPlus",
+  Ignore = "Ignore"
+}
+
 ---@class PT
 ---@field Player "Player"
 ---@field Roller "Roller"

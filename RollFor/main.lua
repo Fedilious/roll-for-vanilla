@@ -644,10 +644,16 @@ local function show_how_to_roll()
   end
 
   if sr_count > 0 then
-    M.chat.announce( string.format( "Add +%s to your SR roll for each SR+. For example, %s for +9.",
-      M.config.sr_plus_multiplier(),
-      hl( string.format( "/roll %s %s", 1 + 9 * M.config.sr_plus_multiplier(), M.config.ms_roll_threshold() + 9 * M.config.sr_plus_multiplier() ) )
-    ) )
+    local strategy = M.config.sr_plus_strategy()
+
+    if strategy == m.Types.SrPlusStrategy.PlayerAddsRoll then
+      M.chat.announce( string.format( "Add +%s to your SR roll for each SR+. For example, %s for +9.",
+        M.config.sr_plus_multiplier(),
+        hl( string.format( "/roll %s %s", 1 + 9 * M.config.sr_plus_multiplier(), M.config.ms_roll_threshold() + 9 * M.config.sr_plus_multiplier() ) )
+      ) )
+    elseif strategy == m.Types.SrPlusStrategy.AddonHandlesPlus then
+      M.chat.announce( string.format( "/roll%s normally for SRs. The loot master will handle SR+ bonuses.", ms ) )
+    end
   end
 end
 

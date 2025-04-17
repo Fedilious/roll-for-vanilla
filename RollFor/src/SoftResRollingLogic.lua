@@ -11,6 +11,7 @@ local take = m.take
 local hl = m.colors.hl
 local roll_type = m.Types.RollType.SoftRes
 local strategy = m.Types.RollingStrategy.SoftResRoll
+local SrPlusStrategy = m.Types.SrPlusStrategy
 
 ---@type MakeRollFn
 local make_roll = m.Types.make_roll
@@ -196,15 +197,23 @@ function M.new(
     local expected_max = ms_threshold
 
     if player.sr_plus ~= nil then
-      expected_min = expected_min + player.sr_plus * config.sr_plus_multiplier()
-      expected_max = expected_max + player.sr_plus * config.sr_plus_multiplier()
+      if config.sr_plus_strategy() == SrPlusStrategy.PlayerAddsRoll then
+        expected_min = expected_min + player.sr_plus * config.sr_plus_multiplier()
+        expected_max = expected_max + player.sr_plus * config.sr_plus_multiplier()
+      elseif config.sr_plus_strategy() == SrPlusStrategy.AddonHandlesPlus then
+        roll = roll + player.sr_plus * config.sr_plus_multiplier()
+      end
     end
 
     local ms_roll = max == expected_max and min == expected_min
 
     if not ms_roll then
       if player.sr_plus ~= nil then
-        chat.info( m.msg.invalid_sr_roll( player.name, player.class, item.link, string.format( "roll correctly. Should use /roll %s %s", expected_min, expected_max ), roll ) )
+        if config.sr_plus_strategy() == SrPlusStrategy.PlayerAddsRoll then
+          chat.info( m.msg.invalid_sr_roll( player.name, player.class, item.link, string.format( "roll correctly. Should use /roll %s %s", expected_min, expected_max ), roll ) )
+        else
+          chat.info( m.msg.invalid_sr_roll( player.name, player.class, item.link, string.format( "roll correctly. The addon and loot master handle SR+" ), roll ) )
+        end
       else
         chat.info( m.msg.invalid_sr_roll( player.name, player.class, item.link, "/roll correctly", roll ) )
       end

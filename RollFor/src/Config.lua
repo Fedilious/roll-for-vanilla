@@ -59,6 +59,7 @@ function M.new( db, event_bus )
     if db.auto_loot == nil then db.auto_loot = true end
     if db.auto_loot_announce == nil then db.auto_loot_announce = false end
     if db.auto_class_announce == nil then db.auto_class_announce = true end
+    if db.sr_plus_strategy == nil then db.sr_plus_strategy = m.Types.SrPlusStrategy.PlayerAddsRoll end
     if db.sr_plus_multiplier == nil then db.sr_plus_multiplier = 10 end
     if db.item_notes_source == nil then db.item_notes_source = "MurderMittens" end
     if db.loot_frame_cursor == nil then db.loot_frame_cursor = true end
@@ -98,6 +99,15 @@ function M.new( db, event_bus )
     return sources
   end
 
+  local function get_possible_sr_plus_strategies()
+    local strategies = { }
+    for _, value in pairs( m.Types.SrPlusStrategy ) do
+      table.insert( strategies, value )
+    end
+
+    return strategies
+  end
+
   local function reset_rolling_popup()
     info( "Rolling popup position has been reset." )
     notify_subscribers( "reset_rolling_popup" )
@@ -126,6 +136,10 @@ function M.new( db, event_bus )
 
   local function print_default_rolling_time()
     info( string.format( "Default rolling time: %s seconds", hl( db.default_rolling_time_seconds ) ) )
+  end
+
+  local function print_sr_plus_strategy()
+    info( string.format( "SR+ Strategy: %s", hl( db.sr_plus_strategy ) ) )
   end
 
   local function print_sr_plus_multiplier()
@@ -160,6 +174,7 @@ function M.new( db, event_bus )
   local function print_settings()
     print_header( "RollFor Configuration" )
     print_default_rolling_time()
+    print_sr_plus_strategy()
     print_sr_plus_multiplier()
     print_master_loot_frame_rows()
     print_roll_thresholds()
@@ -201,6 +216,27 @@ function M.new( db, event_bus )
     end
 
     info( string.format( "Usage: %s <seconds>", hl( "/rf config default-rolling-time" ) ) )
+  end
+
+  local function configure_sr_plus_strategy( args )
+    if args == "config sr-plus-strategy" then
+      print_sr_plus_strategy()
+      return
+    end
+
+    for value in string.gmatch( args, "config sr%-plus%-strategy (.*)" ) do
+      local strategies = get_possible_sr_plus_strategies()
+      if not m.table_contains_value( strategies, value ) then
+        info( string.format( "Invalid SR+ strategy. Possible values: %s", hl( table.concat( strategies, ", " ) ) ) )
+        return
+      end
+
+      db.sr_plus_strategy = value
+      print_sr_plus_strategy()
+      return
+    end
+
+    info( string.format( "Usage: %s <strategy>", hl( "/rf config sr-plus-strategy" ) ) )
   end
 
   local function configure_sr_plus_multiplier( args )
@@ -380,11 +416,15 @@ function M.new( db, event_bus )
     m.print( string.format( "%s - disable loot threshold override", rfc( "threshold" )))
     m.print( string.format( "%s %s - set loot threshold override", rfc( "threshold" ), v( "quality" )))
 
+
+    m.print( string.format( "%s - show SR+ strategy", rfc( "sr-plus-strategy" )))
+    m.print( string.format( "%s %s - set SR+ strategy", rfc( "sr-plus-strategy" ), grey( table.concat( get_possible_sr_plus_strategies(), "|" ) )))
+
     m.print( string.format( "%s - show SR+ multiplier", rfc( "sr-plus-multiplier" )))
     m.print( string.format( "%s %s - set SR+ multiplier", rfc( "sr-plus-multiplier" ), v( "multiplier" )))
 
     m.print( string.format( "%s - show item notes source", rfc( "notes-source" )))
-    m.print( string.format( "%s %s - set item notes source", rfc( "notes-source" ), v( table.concat( get_possible_item_notes_sources(), "|" ) )))
+    m.print( string.format( "%s %s - set item notes source", rfc( "notes-source" ), grey( table.concat( get_possible_item_notes_sources(), "|" ) )))
 
     for _, setting in pairs( toggles ) do
       if not setting.hidden then
@@ -488,6 +528,11 @@ function M.new( db, event_bus )
 
     if string.find( args, "^config master%-loot%-frame%-rows" ) then
       configure_master_loot_frame_rows( args )
+      return
+    end
+
+    if string.find( args, "^config sr%-plus%-strategy" ) then
+      configure_sr_plus_strategy( args )
       return
     end
 

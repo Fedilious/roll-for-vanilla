@@ -12,6 +12,7 @@ local getn = m.getn
 local c = m.colorize_player_by_class
 local blue = m.colors.blue
 local red = m.colors.red
+local orange = m.colors.orange
 local r = m.roll_type_color
 
 ---@param label string
@@ -53,6 +54,22 @@ local top_padding = 11
 ---@param config Config
 ---@diagnostic disable-next-line: unused-local
 function M.new( config, item_notes, player_selection_frame, player_info )
+  local function explain_sr_plus_strategy()
+    local strategy = config.sr_plus_strategy()
+
+    local prefix = orange( "SR+ strategy: " )
+
+    if strategy == m.Types.SrPlusStrategy.PlayerAddsRoll then
+      return string.format( "%sPlayer adds +%s for each SR+ to their roll.", prefix, orange( config.sr_plus_multiplier() ) )
+    elseif strategy == m.Types.SrPlusStrategy.AddonHandlesPlus then
+      return string.format( "%sRollFor will automatically augment the player's SR roll.", prefix )
+    elseif strategy == m.Types.SrPlusStrategy.Ignore then
+      return string.format( "%sSR+ is %s.", prefix, red( "ignored" ) )
+    else
+      return string.format( "%s%s", prefix, orange( strategy or "nil" ) )
+    end
+  end
+
   ---@param on_click fun()
   local function award_winner_button( on_click )
     return { type = "award_button", label = "Award", width = 90, on_click = on_click, padding = 6 }
@@ -220,6 +237,10 @@ function M.new( config, item_notes, player_selection_frame, player_info )
       add_winners( content, data.winners, data.strategy_type )
     end
 
+    if data.strategy_type and data.strategy_type == RS.SoftResRoll then
+      add_text( content, explain_sr_plus_strategy(), top_padding )
+    end
+
     add_buttons( content, data.buttons )
 
     return content
@@ -281,6 +302,10 @@ function M.new( config, item_notes, player_selection_frame, player_info )
     if data.seconds_left then seconds_left_content( content, data.seconds_left ) end
 
     add_winners( content, data.winners, data.strategy_type )
+
+    if data.strategy_type and data.strategy_type == RS.SoftResRoll then
+      add_text( content, explain_sr_plus_strategy(), top_padding )
+    end
 
     if data.waiting_for_rolls then
       add_text( content, "Waiting for remaining rolls...", top_padding )
