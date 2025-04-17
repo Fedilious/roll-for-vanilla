@@ -10,23 +10,23 @@ Note that I'm not really paying attention to testing, documentation or code styl
 - **Priority** loot recipients (e.g. for designated DE): `/rfprio add <PLAYER>`
 - **Class announcements** on rolls (https://github.com/obszczymucha/roll-for-vanilla/pull/32 by @sica42)
 - Rolling can now last up to **30s**
-- `/rf config threshold <COLOUR>` can **override the master-loot threshold**. Set to `orange` to auto-loot everything that's not BoP.
+- You can **override the auto-loot threshold**
 - You can select an arbitrary target from the loot list, no need to go to `...` anymore
-- Loot frame is automatically positioned at cursor (https://github.com/sica42/roll-for-vanilla/commit/76993f227733fbeb1f02cb45cd40d8b9eb40ad60 by @sica42)
+- Loot frame is automatically positioned at cursor ([`76993f2`](https://github.com/sica42/roll-for-vanilla/commit/76993f227733fbeb1f02cb45cd40d8b9eb40ad60) by @sica42)
 - Added a button to speed up the roll (instead of abruptly cancelling it)
 - `/htr` will show SR+ rolling instructions
 - `/arf` can bypass HR items
 - TMOG rolls are now `/roll 50` by default
 
 ## New configuration options
-- `/rf config threshold` (default unset): Overrides the master loot threshold
+- `/rf config threshold` (default unset): Overrides the master loot threshold. Set to `orange` to auto-loot everything that's not BoP.
 - `/rf config sr-plus-strategy` (default `PlayerAddsRoll`): Sets how SR+ is added to the roll. Possible options:
     - `PlayerAddsRoll`: Players have to manually add the proper number to their roll
     - `AddonHandlesPlus`: The addon adds the SR+ bonus automatically
     - `Ignore`: Does nothing. Will still show the SR+ to you if available.
 - `/rf config sr-plus-multiplier` (default 10): Sets the SR+ multiplier (e.g. 10 means that you add +10 to your roll for each SR+ accumulated)
 - `/rf config notes-source` (default `MurderMittens`): Sets where to fetch item notes from.
-- `/rf config loot-frame-cursor`: Toggles loot frame being positioned at cursor location.
+- `/rf config loot-frame-cursor` (default true): Toggles loot frame being positioned at cursor location.
 
 ### Roadmap
 - [ ] Implement more of sica's changes
