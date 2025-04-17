@@ -34,6 +34,7 @@ function M.new( db, event_bus )
     [ "auto_master_loot" ] = { cmd = "auto-master-loot", display = "Auto master loot", help = "toggle auto master loot" },
     [ "rolling_popup_lock" ] = { cmd = "rolling-popup-lock", display = "Rolling popup lock", help = "toggle rolling popup lock" },
     [ "raid_roll_again" ] = { cmd = "raid-roll-again", display = string.format( "%s button", hl( "Raid roll again" ) ), help = string.format( "toggle %s button", hl( "Raid roll again" ) ) },
+    [ "loot_frame_cursor" ] = { cmd = "loot-frame-cursor", display = "Display loot frame at cursor position", help = "toggle displaying loot frame at cursor position"},
     [ "classic_look" ] = { cmd = "classic-look", display = "Classic look", help = "toggle classic look", requires_reload = true },
   }
 
@@ -60,6 +61,7 @@ function M.new( db, event_bus )
     if db.auto_class_announce == nil then db.auto_class_announce = true end
     if db.sr_plus_multiplier == nil then db.sr_plus_multiplier = 10 end
     if db.item_notes_source == nil then db.item_notes_source = "MurderMittens" end
+    if db.loot_frame_cursor == nil then db.loot_frame_cursor = true end
   end
 
   local function print( toggle_key )
@@ -571,6 +573,8 @@ function M.new( db, event_bus )
     configure_master_loot_frame_rows = configure_master_loot_frame_rows,
     loot_threshold = loot_threshold,
     auto_class_announce = get( "auto_class_announce" ),
+    loot_frame_cursor = get( "loot_frame_cursor" ),
+    sr_plus_strategy = get( "sr_plus_strategy" ),
     sr_plus_multiplier = get( "sr_plus_multiplier" ),
     item_notes_source = get( "item_notes_source" ),
   }
