@@ -1,7 +1,7 @@
 ## Interface: 11200
 ## Title: RollFor - Murder Mittens
 ## Author: Obszczymucha
-## Version: 4.6.102
+## Version: 4.6.103
 ## Notes: An automated item roller with soft ressing support via raidres.fly.dev.
 ## SavedVariables: RollForDb
 ## SavedVariablesPerCharacter: RollForCharDb

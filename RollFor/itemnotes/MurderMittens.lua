@@ -541,6 +541,9 @@ local function blackwing_lair()
       [ 1 ] = {
         [ "note" ] = "<Murder Mittens> Rank Priority",
         [ "normal" ] = true
+      },
+      [ 2 ] = {
+        [ "note" ] = "Rogues = Hunters = Feral DPS > Melee DPS",
       }
     },
     [ 19002 ] = { -- Horde Head
@@ -599,11 +602,6 @@ local function blackwing_lair()
         [ "note" ] = "2H Ret Paladin = 2H Human Warrior = Hunters",
       }
     },
-    [ 19377 ] = { -- Prestor's Talisman of Connivery
-      [ 1 ] = {
-        [ "note" ] = "Rogues = Hunters = Feral DPS > Melee DPS",
-      }
-    },
     [ 19378 ] = { -- Cloak of the Brood Lord
       [ 1 ] = {
         [ "note" ] = "Caster DPS = Ret?/prot Paladin",
@@ -627,6 +625,11 @@ local function blackwing_lair()
   };
 end
 
+local function add_mm_rank_prio(loot, id)
+  if loot[id] == nil then loot[id] = {} end
+  table.insert(loot[id], { [ "note" ] = "Guild Rank Priority", [ "normal" ] = true })
+end
+
 local function naxxramas()
   local loot = {
     [ 22954 ] = { -- Kiss of the spider
@@ -637,44 +640,46 @@ local function naxxramas()
     }
   }
 
-  local function add_mm_rank_prio(id)
-    if loot[id] == nil then loot[id] = {} end
-    table.insert(loot[id], { [ "note" ] = "Guild Rank Priority", [ "normal" ] = true })
-  end
-
   -- Rime Covered Mantle
-  add_mm_rank_prio(22983)
+  add_mm_rank_prio(loot, 22983)
   -- Plated Abomination Ribcage
-  add_mm_rank_prio(23000)
+  add_mm_rank_prio(loot, 23000)
   -- Leggings of Polarity
-  add_mm_rank_prio(23070)
+  add_mm_rank_prio(loot, 23070)
   -- Legplates of Carnage
-  add_mm_rank_prio(23068)
+  add_mm_rank_prio(loot, 23068)
   -- Wraith Blade
-  add_mm_rank_prio(22807)
+  add_mm_rank_prio(loot, 22807)
+
+  return loot
+end
+
+local function upper_necropolis()
+  local loot = {}
+
   -- Sapphiron Loot
-  add_mm_rank_prio(23040)
-  add_mm_rank_prio(23041)
-  add_mm_rank_prio(23043)
-  add_mm_rank_prio(23045)
-  add_mm_rank_prio(23046)
-  add_mm_rank_prio(23047)
-  add_mm_rank_prio(23048)
-  add_mm_rank_prio(23049)
-  add_mm_rank_prio(23050)
-  add_mm_rank_prio(23242)
+  add_mm_rank_prio(loot, 23040)
+  add_mm_rank_prio(loot, 23041)
+  add_mm_rank_prio(loot, 23043)
+  add_mm_rank_prio(loot, 23045)
+  add_mm_rank_prio(loot, 23046)
+  add_mm_rank_prio(loot, 23047)
+  add_mm_rank_prio(loot, 23048)
+  add_mm_rank_prio(loot, 23049)
+  add_mm_rank_prio(loot, 23050)
+  add_mm_rank_prio(loot, 23242)
   -- Kel'Thuzad Loot
-  add_mm_rank_prio(22798)
-  add_mm_rank_prio(22799)
-  add_mm_rank_prio(22802)
-  add_mm_rank_prio(22812)
-  add_mm_rank_prio(22819)
-  add_mm_rank_prio(22821)
-  add_mm_rank_prio(23053)
-  add_mm_rank_prio(23054)
-  add_mm_rank_prio(23056)
-  add_mm_rank_prio(23057)
-  add_mm_rank_prio(23577)
+  add_mm_rank_prio(loot, 22798)
+  add_mm_rank_prio(loot, 22799)
+  add_mm_rank_prio(loot, 22802)
+  add_mm_rank_prio(loot, 22812)
+  add_mm_rank_prio(loot, 22819)
+  add_mm_rank_prio(loot, 22821)
+  add_mm_rank_prio(loot, 23053)
+  add_mm_rank_prio(loot, 23054)
+  add_mm_rank_prio(loot, 23056)
+  add_mm_rank_prio(loot, 23057)
+  add_mm_rank_prio(loot, 23577)
 
   return loot
 end
@@ -683,6 +688,7 @@ M[ "Ahn'Qiraj" ] = ahn_qiraj()
 M[ "Blackwing Lair" ] = blackwing_lair()
 M[ "Molten Core" ] = molten_core()
 M[ "Naxxramas" ] = naxxramas()
+M[ "The Upper Necropolis" ] = upper_necropolis()
 
 m.ItemNotesDB[ NOTES_NAME ] = M
 return M;
